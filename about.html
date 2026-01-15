@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人简历 - 个人网站</title>
+    <meta name="description" content="个人简历页，展示个人信息、教育背景、工作经历和技能。">
+    <meta property="og:title" content="个人简历 - 个人网站">
+    <meta property="og:description" content="个人信息、教育背景、工作经历和技能展示。">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary">
+    <link rel="stylesheet" href="css/style.css?v=20251119">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* 简历特定样式 */
+        .resume-wrapper {
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            margin: 40px auto;
+            max-width: 1200px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .resume-header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .resume-avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .resume-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: float 10s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(10px, 10px); }
+        }
+        
+        .resume-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .resume-header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .contact-info {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.95rem;
+        }
+        
+        .contact-item i {
+            font-size: 1.2rem;
+        }
+        
+        .resume-content {
+            padding: 40px;
+        }
+        
+        .resume-section {
+            margin-bottom: 40px;
+            animation: fadeIn 0.6s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--bg-accent);
+            color: var(--primary);
+        }
+        
+        .section-title i {
+            font-size: 1.5rem;
+            background: var(--bg-accent);
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+        
+        .section-title h2 {
+            font-size: 1.5rem;
+            margin: 0;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .info-item {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .info-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        .info-item h3 {
+            color: var(--text-primary);
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .info-item p {
+            color: var(--text-secondary);
+            margin: 0;
+            line-height: 1.5;
+        }
+        
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+            margin-left: 10px;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: var(--primary-light);
+            border-radius: 3px;
+        }
+        
+        .timeline-item {
+            position: relative;
+            margin-bottom: 35px;
+            padding-bottom: 15px;
+            transition: transform 0.3s ease;
+        }
+        
+        .timeline-item:hover {
+            transform: translateX(5px);
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -34px;
+            top: 5px;
+            width: 10px;
+            height: 10px;
+            background: var(--primary);
+            border-radius: 50%;
+            border: 3px solid white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .timeline-header {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .timeline-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0;
+        }
+        
+        .timeline-date {
+            font-size: 0.9rem;
+            color: var(--primary);
+            background: var(--bg-accent);
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+        
+        .timeline-subtitle {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+        
+        .timeline-content {
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+        
+        .timeline-content ul {
+            padding-left: 20px;
+            margin: 10px 0 0 0;
+        }
+        
+        .timeline-content li {
+            margin-bottom: 8px;
+            position: relative;
+        }
+        
+        .timeline-content li::before {
+            content: '•';
+            color: var(--primary);
+            font-weight: bold;
+            display: inline-block;
+            width: 1em;
+            margin-left: -1em;
+        }
+        
+        .skills-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 25px;
+        }
+        
+        .skill-category {
+            background: var(--bg-secondary);
+            padding: 25px;
+            border-radius: 12px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .skill-category:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .skill-category h3 {
+            color: var(--primary);
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            border-bottom: 2px solid var(--bg-accent);
+            padding-bottom: 8px;
+        }
+        
+        .skill-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .skill-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+            font-size: 0.95rem;
+            color: var(--text-primary);
+        }
+        
+        .skill-item i {
+            color: var(--primary);
+            font-size: 1.1rem;
+        }
+        
+        .awards-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .award-item {
+            background: linear-gradient(135deg, var(--bg-secondary), white);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--primary);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .award-item:hover {
+            transform: translateX(5px);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .award-item p {
+            margin: 0;
+            color: var(--text-primary);
+            font-size: 1rem;
+        }
+        
+        .self-intro {
+            background: linear-gradient(135deg, var(--bg-accent), white);
+            padding: 30px;
+            border-radius: 12px;
+            border-left: 4px solid var(--primary);
+            font-style: italic;
+            color: var(--text-primary);
+            line-height: 1.7;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .resume-wrapper {
+                margin: 20px 15px;
+            }
+            
+            .resume-header,
+            .resume-content {
+                padding: 25px;
+            }
+            
+            .resume-header h1 {
+                font-size: 2rem;
+            }
+            
+            .contact-info {
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+            }
+            
+            .timeline-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .skills-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav aria-label="主导航">
+        <div class="nav-container">
+            <a href="index.html" class="logo">个人网站</a>
+            <ul class="nav-links" id="nav-links">
+                <li><a href="index.html"><i class="fas fa-home"></i> 首页</a></li>
+                <li><a href="about.html"><i class="fas fa-user"></i> 个人简历</a></li>
+                <li><a href="blog.html"><i class="fas fa-book"></i> 学习记录</a></li>
+                <li><a href="resources.html"><i class="fas fa-folder"></i> 资料展示</a></li>
+            </ul>
+            <div class="current-time" id="current-time"></div>
+            <div class="hamburger" role="button" tabindex="0" aria-label="打开导航菜单" aria-controls="nav-links" aria-expanded="false">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <a href="#main" class="skip-link">跳到内容</a>
+    <main id="main" role="main">
+
+    <!-- 页面标题 -->
+    <section class="hero hero--compact">
+        <div class="container">
+            <h1>个人简历</h1>
+            <p>了解我的个人信息、教育背景、工作经历和专业技能</p>
+        </div>
+    </section>
+
+    <!-- 简历内容 -->
+    <div class="container">
+        <div class="resume-wrapper" id="resume-container">
+            <div class="loading" style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px;">
+                <div class="spinner"></div>
+                <span style="margin-top: 20px;">正在加载简历内容...</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    </main>
+    <footer role="contentinfo">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>关于我</h3>
+                    <p>我是一个热爱学习和分享的技术爱好者，欢迎访问我的个人网站。</p>
+                </div>
+                <div class="footer-column">
+                    <h3>快速链接</h3>
+                    <ul>
+                        <li><a href="index.html">首页</a></li>
+                        <li><a href="about.html">个人简历</a></li>
+                        <li><a href="blog.html">学习记录</a></li>
+                        <li><a href="resources.html">资料展示</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>联系方式</h3>
+                    <ul>
+                        <li><a href="#"><i class="fas fa-envelope"></i> 邮箱</a></li>
+                        <li><a href="#"><i class="fab fa-github"></i> GitHub</a></li>
+                        <li><a href="#"><i class="fab fa-weixin"></i> 微信</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 个人网站. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 回到顶部按钮 -->
+    <div class="back-to-top">
+        <i class="fas fa-arrow-up"></i>
+    </div>
+
+    <script src="lib/marked.min.js?v=20251119"></script>
+    <!-- 密码保护脚本 -->
+    <script src="js/password-redirect.js"></script>
+    <script src="js/main.js?v=20251119"></script>
+    <script>
+        // 解析YAML frontmatter
+        function parseYamlFrontmatter(markdown) {
+            const frontmatterRegex = /^---[\s\S]*?---\s*/;
+            const match = markdown.match(frontmatterRegex);
+            if (match) {
+                const frontmatter = match[0].replace(/^---|\s*---$/, '').trim();
+                const data = {};
+                frontmatter.split('\n').forEach(line => {
+                    const parts = line.split(': ');
+                    if (parts.length >= 2) {
+                        const key = parts[0].trim();
+                        const value = parts.slice(1).join(': ').trim();
+                        data[key] = value;
+                    }
+                });
+                return {
+                    frontmatter: data,
+                    content: markdown.replace(frontmatterRegex, '')
+                };
+            }
+            return { frontmatter: {}, content: markdown };
+        }
+
+        // 解析简历内容为结构化数据
+        function parseResumeContent(markdownContent) {
+            const sections = {};
+            const lines = markdownContent.split('\n');
+            let currentSection = null;
+            let sectionContent = [];
+
+            lines.forEach(line => {
+                // 跳过空行
+                if (line.trim() === '') return;
+                
+                // 匹配二级标题（主要部分）
+                if (line.startsWith('## ')) {
+                    // 保存之前的部分
+                    if (currentSection && sectionContent.length > 0) {
+                        sections[currentSection] = sectionContent.join('\n');
+                        sectionContent = [];
+                    }
+                    // 开始新部分
+                    currentSection = line.replace('## ', '').trim();
+                }
+                // 匹配三级标题（子部分，如教育经历项）或普通内容
+                else if (currentSection) {
+                    sectionContent.push(line);
+                }
+            });
+
+            // 保存最后一部分内容
+            if (currentSection && sectionContent.length > 0) {
+                sections[currentSection] = sectionContent.join('\n');
+            }
+
+            return sections;
+        }
+
+        // 提取基本信息
+        function extractBasicInfo(basicInfoText) {
+            const info = {};
+            const lines = basicInfoText.split('\n');
+            
+            lines.forEach(line => {
+                // 使用更宽松的正则表达式匹配各种格式变体
+                const nameMatch = line.match(/[\*\s]*姓名[\*：\s]+(.+)/);
+                const jobMatch = line.match(/[\*\s]*求职意向[\*：\s]+(.+)/);
+                const birthMatch = line.match(/[\*\s]*出生日期[\*：\s]+(.+)/);
+                const phoneMatch = line.match(/[\*\s]*手机号[\*：\s]+(.+)/);
+                const emailMatch = line.match(/[\*\s]*邮箱[\*：\s]+(.+)/);
+                
+                if (nameMatch) info.name = nameMatch[1].trim();
+                if (jobMatch) info.jobIntention = jobMatch[1].trim();
+                if (birthMatch) info.birthDate = birthMatch[1].trim();
+                if (phoneMatch) info.phone = phoneMatch[1].trim();
+                if (emailMatch) info.email = emailMatch[1].trim();
+            });
+            
+            return info;
+        }
+
+        // 提取时间线数据（教育、实习、项目经历）
+        function extractTimelineItems(sectionText) {
+            const items = [];
+            const lines = sectionText.split('\n');
+            let currentItem = null;
+            let isContentSection = false;
+
+            // 识别项目的方法
+            const isItemTitle = (line) => line.startsWith('### ');
+            const isPositionLine = (line) => line.includes('**') && line.includes('–') || line.includes('**') && line.includes('-');
+            // 匹配日期格式：如 2025.01 – 2025.08
+            const isDateLine = (line) => /^\d{4}\.\d{1,2}\s*[–-]\s*\d{4}\.\d{1,2}$/.test(line.trim());
+            // 匹配角色行：加粗的文本
+            const isRoleLine = (line) => /^\*{2}.*\*{2}$/.test(line.trim());
+            const isContentBullet = (line) => line.startsWith('- ');
+
+            lines.forEach(line => {
+                // 找到新的项目标题
+                if (isItemTitle(line)) {
+                    // 保存之前的项目
+                    if (currentItem) {
+                        items.push(currentItem);
+                    }
+                    
+                    // 创建新项目
+                    const titleParts = line.replace('### ', '').split('\\|');
+                    currentItem = {
+                        organization: titleParts[0].trim(),
+                        position: '',
+                        date: '',
+                        content: []
+                    };
+                    
+                    // 检查是否在标题行中包含了组织和部门
+                    if (titleParts.length > 1) {
+                        currentItem.department = titleParts[1].trim();
+                    }
+                    
+                    isContentSection = false;
+                }
+                // 提取职位和日期行（如 "**机械（机械电子）硕士** 2023.09 – 2026.07"）
+                else if (currentItem && isPositionLine(line)) {
+                    // 尝试提取职位和日期
+                    const posMatch = line.match(/\*{2}(.*)\*{2}\s+([\d\.\s–-]+)/);
+                    if (posMatch) {
+                        currentItem.position = posMatch[1].trim();
+                        currentItem.date = posMatch[2].trim();
+                    } else {
+                        // 如果没有捕获到，至少保存为职位
+                        currentItem.position = line.replace(/\*{2}/g, '').trim();
+                    }
+                }
+                // 提取项目时间（现在是独立行的日期格式）
+                else if (currentItem && isDateLine(line)) {
+                    // 直接使用整行作为日期
+                    currentItem.date = line.trim();
+                }
+                // 提取项目角色（现在是加粗的独立行）
+                else if (currentItem && isRoleLine(line)) {
+                    // 移除加粗标记
+                    currentItem.position = line.replace(/\*{2}/g, '').trim();
+                }
+                // 提取内容列表项
+                else if (currentItem && isContentBullet(line)) {
+                    isContentSection = true;
+                    const content = line.replace('- ', '').trim();
+                    if (content) {
+                        // 移除可能存在的加粗标记
+                        const cleanContent = content.replace(/\*{2}/g, '').trim();
+                        currentItem.content.push(cleanContent);
+                    }
+                }
+                // 处理描述后的内容（项目描述后的内容）
+                else if (currentItem && line.includes('**项目描述**') || line.includes('**项目背景**')) {
+                    isContentSection = true;
+                }
+            });
+
+            // 添加最后一个项目
+            if (currentItem) {
+                items.push(currentItem);
+            }
+
+            return items;
+        }
+
+        // 提取技能数据
+        function extractSkills(skillsText) {
+            const skills = [];
+            const lines = skillsText.split('\n');
+            
+            lines.forEach(line => {
+                // 尝试提取带分类的技能行
+                const categoryMatch = line.match(/^-\s*\*{2}([^\*]+)\*{2}：?\s*(.+)/);
+                
+                if (categoryMatch) {
+                    const category = categoryMatch[1].trim();
+                    const content = categoryMatch[2].trim();
+                    // 移除可能存在的加粗标记
+                    const cleanContent = content.replace(/\*{2}/g, '').trim();
+                    skills.push({
+                        category: category,
+                        content: cleanContent
+                    });
+                }
+            });
+            
+            // 如果没有找到带分类的技能，尝试提取简单列表
+            if (skills.length === 0) {
+                lines.forEach(line => {
+                    if (line.startsWith('- ')) {
+                        const skillContent = line.replace('- ', '').trim();
+                        if (skillContent) {
+                            // 尝试从内容中提取分类
+                            const simpleCategoryMatch = skillContent.match(/^\*{2}([^\*]+)\*{2}：?\s*(.+)/);
+                            if (simpleCategoryMatch) {
+                                skills.push({
+                                    category: simpleCategoryMatch[1].trim(),
+                                    content: simpleCategoryMatch[2].trim()
+                                });
+                            } else {
+                                // 默认为"其他技能"
+                                skills.push({
+                                    category: '其他技能',
+                                    content: skillContent.replace(/\*{2}/g, '').trim()
+                                });
+                            }
+                        }
+                    }
+                });
+            }
+
+            return skills;
+        }
+
+        // 提取荣誉奖励
+        function extractAwards(awardsText) {
+            const awards = [];
+            const lines = awardsText.split('\n');
+            
+            lines.forEach(line => {
+                if (line.startsWith('- ')) {
+                    const award = line.replace('- ', '').trim();
+                    if (award) {
+                        awards.push(award);
+                    }
+                }
+            });
+
+            return awards;
+        }
+
+        // 渲染简历HTML
+        function renderResumeHTML(resumeData) {
+            const container = document.getElementById('resume-container');
+            
+            // 解析Markdown
+            const { frontmatter, content } = parseYamlFrontmatter(resumeData);
+            const sections = parseResumeContent(content);
+            
+            // 提取各部分数据
+            const basicInfo = extractBasicInfo(sections['基本信息'] || '');
+            const educationItems = extractTimelineItems(sections['教育经历'] || '');
+            const internshipItems = extractTimelineItems(sections['实习经历'] || '');
+            const projectItems = extractTimelineItems(sections['项目经历'] || '');
+            const skills = extractSkills(sections['专业技能'] || '');
+            const awards = extractAwards(sections['荣誉奖励'] || '');
+            const selfIntro = sections['个人评价'] ? sections['个人评价'].trim() : '';
+            
+            // 构建HTML
+            let html = `
+                <div class="resume-header">
+                    <img src="storage/images/avatar.jpg" alt="个人头像" class="resume-avatar">
+                    <h1>${basicInfo.name || frontmatter.author || '个人简历'}</h1>
+                    <p>${basicInfo.jobIntention || '求职意向'}</p>
+                    <div class="contact-info">
+                        ${basicInfo.email ? `<div class="contact-item"><i class="fas fa-envelope"></i> ${basicInfo.email}</div>` : ''}
+                        ${basicInfo.phone ? `<div class="contact-item"><i class="fas fa-phone"></i> ${basicInfo.phone}</div>` : ''}
+                        ${basicInfo.birthDate ? `<div class="contact-item"><i class="fas fa-calendar-alt"></i> ${basicInfo.birthDate}</div>` : ''}
+                    </div>
+                </div>
+                <div class="resume-content">
+            `;
+
+            // 基本信息部分
+            if (Object.keys(basicInfo).length > 0) {
+                html += `
+                    <div class="resume-section">
+                        <div class="section-title">
+                            <i class="fas fa-info-circle"></i>
+                            <h2>基本信息</h2>
+                        </div>
+                        <div class="info-grid">
+                            ${basicInfo.name ? `<div class="info-item"><h3><i class="fas fa-user"></i> 姓名</h3><p>${basicInfo.name}</p></div>` : ''}
+                            ${basicInfo.jobIntention ? `<div class="info-item"><h3><i class="fas fa-briefcase"></i> 求职意向</h3><p>${basicInfo.jobIntention}</p></div>` : ''}
+                            ${basicInfo.birthDate ? `<div class="info-item"><h3><i class="fas fa-calendar-alt"></i> 出生日期</h3><p>${basicInfo.birthDate}</p></div>` : ''}
+                        </div>
+                    </div>
+                `;
+            }
+
+            // 教育经历部分
+            if (educationItems.length > 0) {
+                html += `
+                    <div class="resume-section">
+                        <div class="section-title">
+                            <i class="fas fa-graduation-cap"></i>
+                            <h2>教育经历</h2>
+                        </div>
+                        <div class="timeline">
+                `;
+                
+                educationItems.forEach((item, index) => {
+                    html += `
+                        <div class="timeline-item" style="animation-delay: ${index * 0.1}s;">
+                            <div class="timeline-header">
+                                <h3 class="timeline-title">${item.organization}</h3>
+                                <span class="timeline-date">${item.date}</span>
+                            </div>
+                            <div class="timeline-subtitle">${item.position}</div>
+                            <div class="timeline-content">
+                                <ul>
+                                    ${item.content.map(line => `<li>${line}</li>`).join('')}
+                                </ul>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                html += `
+                        </div>
+                    </div>
+                `;
+            }
+
+            // 实习经历部分
+            if (internshipItems.length > 0) {
+                html += `
+                    <div class="resume-section">
+                        <div class="section-title">
+                            <i class="fas fa-building"></i>
+                            <h2>实习经历</h2>
+                        </div>
+                        <div class="timeline">
+                `;
+                
+                internshipItems.forEach((item, index) => {
+                    html += `
+                        <div class="timeline-item" style="animation-delay: ${index * 0.1}s;">
+                            <div class="timeline-header">
+                                <h3 class="timeline-title">${item.organization}</h3>
+                                <span class="timeline-date">${item.date}</span>
+                            </div>
+                            <div class="timeline-subtitle">${item.position}</div>
+                            <div class="timeline-content">
+                                <ul>
+                                    ${item.content.map(line => `<li>${line}</li>`).join('')}
+                                </ul>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                html += `
+                        </div>
+                    </div>
+                `;
+            }
+
+            // 项目经历部分
+            if (projectItems.length > 0) {
+                html += `
+                    <div class="resume-section">
+                        <div class="section-title">
+                            <i class="fas fa-project-diagram"></i>
+                            <h2>项目经历</h2>
+                        </div>
+                        <div class="timeline">
+                `;
+                
+                projectItems.forEach((item, index) => {
+                    html += `
+                        <div class="timeline-item" style="animation-delay: ${index * 0.1}s;">
+                            <div class="timeline-header">
+                                <h3 class="timeline-title">${item.organization}</h3>
+                                <span class="timeline-date">${item.date}</span>
+                            </div>
+                            <div class="timeline-subtitle">${item.position}</div>
+                            <div class="timeline-content">
+                                <ul>
+                                    ${item.content.map(line => `<li>${line}</li>`).join('')}
+                                </ul>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                html += `
+                        </div>
+                    </div>
+                `;
+            }
+
+            // 专业技能部分
+            if (skills.length > 0) {
+                // 按类别分组技能
+                const skillsByCategory = {};
+                skills.forEach(skill => {
+                    if (!skillsByCategory[skill.category]) {
+                        skillsByCategory[skill.category] = [];
+                    }
+                    skillsByCategory[skill.category].push(skill.content);
+                });
+
+                html += `
+                    <div class="resume-section">
+                        <div class="section-title">
+                            <i class="fas fa-cogs"></i>
+                            <h2>专业技能</h2>
+                        </div>
+                        <div class="skills-container">
+                `;
+                
+                Object.keys(skillsByCategory).forEach(category => {
+                    html += `
+                        <div class="skill-category">
+                            <h3>${category}</h3>
+                            <ul class="skill-list">
+                                ${skillsByCategory[category].map(skill => `<li class="skill-item"><i class="fas fa-check-circle"></i> ${skill}</li>`).join('')}
+                            </ul>
+                        </div>
+                    `;
+                });
+                
+                html += `
+                        </div>
+                    </div>
+                `;
+            }
+
+            // 荣誉奖励部分
+            if (awards.length > 0) {
+                html += `
+                    <div class="resume-section">
+                        <div class="section-title">
+                            <i class="fas fa-award"></i>
+                            <h2>荣誉奖励</h2>
+                        </div>
+                        <ul class="awards-list">
+                            ${awards.map(award => `<li class="award-item"><p>${award}</p></li>`).join('')}
+                        </ul>
+                    </div>
+                `;
+            }
+
+            // 个人评价部分
+            if (selfIntro) {
+                html += `
+                    <div class="resume-section">
+                        <div class="section-title">
+                            <i class="fas fa-user-check"></i>
+                            <h2>个人评价</h2>
+                        </div>
+                        <div class="self-intro">
+                            ${selfIntro}
+                        </div>
+                    </div>
+                `;
+            }
+
+            // 闭合HTML
+            html += `
+                </div>
+            `;
+
+            // 应用HTML
+            container.innerHTML = html;
+        }
+
+        // 加载和渲染简历
+        function loadAndRenderResume(filePath) {
+            const container = document.getElementById('resume-container');
+            
+            // 显示加载状态
+            container.innerHTML = `<div class="loading" style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px;"><div class="spinner"></div><span style="margin-top: 20px;">正在加载简历内容...</span></div>`;
+            
+            // 动态构建适合GitHub Pages的路径
+            let fullPath;
+            
+            // 检查是否在GitHub Pages环境下
+            if (window.location.hostname.endsWith('github.io')) {
+                // 对于用户网站（如guoguoapi.github.io），直接使用根路径
+                // 无论访问哪个页面，路径都应该是：/filePath
+                fullPath = '/' + filePath;
+            } else {
+                // 本地环境，直接使用相对路径
+                fullPath = filePath;
+            }
+            
+            // 尝试加载简历文件
+            fetch(fullPath)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP错误! 状态: ${response.status}`);
+                    }
+                    return response.text();
+                })
+                .then(markdownText => {
+                    try {
+                        // 渲染结构化简历
+                        renderResumeHTML(markdownText);
+                    } catch (e) {
+                        console.error('简历渲染错误:', e);
+                        container.innerHTML = `
+                            <div style="text-align: center; padding: 60px;">
+                                <i class="fas fa-exclamation-circle" style="font-size: 48px; color: #f39c12; margin-bottom: 20px;"></i>
+                                <h3>简历内容渲染失败</h3>
+                                <p>解析Markdown格式时发生错误</p>
+                            </div>
+                        `;
+                    }
+                })
+                .catch(error => {
+                    console.error('加载简历失败:', error);
+                    
+                    // 尝试使用备用路径
+                    const backupPath = filePath.startsWith('/') ? filePath : `/${filePath}`;
+                    if (backupPath !== fullPath) {
+                        fetch(backupPath)
+                            .then(response => {
+                                if (!response.ok) throw new Error(`备用路径HTTP错误! 状态: ${response.status}`);
+                                return response.text();
+                            })
+                            .then(renderResumeHTML)
+                            .catch(() => {
+                                // 显示最终错误信息
+                                container.innerHTML = `
+                                    <div style="text-align: center; padding: 60px;">
+                                        <i class="fas fa-exclamation-triangle" style="font-size: 48px; color: #e74c3c; margin-bottom: 20px;"></i>
+                                        <h3>简历加载失败</h3>
+                                        <p>无法加载简历文件，请检查路径或稍后再试</p>
+                                    </div>
+                                `;
+                            });
+                    } else {
+                        // 显示最终错误信息
+                        container.innerHTML = `
+                            <div style="text-align: center; padding: 60px;">
+                                <i class="fas fa-exclamation-triangle" style="font-size: 48px; color: #e74c3c; margin-bottom: 20px;"></i>
+                                <h3>简历加载失败</h3>
+                                <p>无法加载简历文件，请检查路径或稍后再试</p>
+                            </div>
+                        `;
+                    }
+                });
+        }
+
+        // 页面加载时默认加载简历
+        document.addEventListener('DOMContentLoaded', function() {
+            const resumePath = 'assets/resume.md';
+            loadAndRenderResume(resumePath);
+        });
+    </script>
+    
+    <!-- 实时时间显示脚本 -->
+    <script>
+        // 实时更新时间
+        function updateCurrentTime() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            const weekDays = ['日', '一', '二', '三', '四', '五', '六'];
+            const weekDay = weekDays[now.getDay()];
+            
+            const timeString = `${year}年${month}月${day}日 星期${weekDay} ${hours}:${minutes}:${seconds}`;
+            document.getElementById('current-time').textContent = timeString;
+        }
+        
+        // 页面加载时更新一次时间，然后每秒更新一次
+        window.onload = function() {
+            updateCurrentTime();
+            setInterval(updateCurrentTime, 1000);
+        };
+    </script>
+</body>
+</html>

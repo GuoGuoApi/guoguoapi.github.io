@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文章详情 - 个人网站</title>
+    <meta name="description" content="文章详情页，展示具体学习笔记或技术文章内容。">
+    <meta property="og:title" content="文章详情 - 个人网站">
+    <meta property="og:description" content="展示具体学习笔记或技术文章内容。">
+    <meta property="og:type" content="article">
+    <meta name="twitter:card" content="summary">
+    <link rel="stylesheet" href="css/style.css?v=20251119">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav aria-label="主导航">
+        <div class="nav-container">
+            <a href="index.html" class="logo">个人网站</a>
+            <ul class="nav-links" id="nav-links">
+                <li><a href="index.html"><i class="fas fa-home"></i> 首页</a></li>
+                <li><a href="about.html"><i class="fas fa-user"></i> 个人简历</a></li>
+                <li><a href="blog.html"><i class="fas fa-book"></i> 学习记录</a></li>
+                <li><a href="resources.html"><i class="fas fa-folder"></i> 资料展示</a></li>
+            </ul>
+            <div class="current-time" id="current-time"></div>
+            <div class="hamburger" role="button" tabindex="0" aria-label="打开导航菜单" aria-controls="nav-links" aria-expanded="false">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <a href="#main" class="skip-link">跳到内容</a>
+    <main id="main" role="main">
+
+    <!-- 页面标题 -->
+    <section class="hero hero--compact">
+        <div class="container">
+            <a href="blog.html" style="color: white; text-decoration: none; margin-bottom: 10px; display: inline-block;">
+                <i class="fas fa-arrow-left"></i> 返回文章列表
+            </a>
+            <h1 id="article-title">文章详情</h1>
+            <div id="article-meta" style="margin-top: 10px;">
+                <span id="article-date"><i class="fas fa-calendar-alt"></i> 加载中...</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- 文章内容 -->
+    <section class="container">
+        <div class="markdown-content" id="article-content">
+            <div class="loading">
+                <div class="spinner"></div>
+                <span>正在加载文章内容...</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- 相关文章推荐 -->
+    <section class="container" style="margin-top: 50px;">
+        <h2 style="text-align: center; margin-bottom: 30px;">相关推荐</h2>
+        <div id="related-articles">
+            <!-- 相关文章将通过JavaScript动态加载 -->
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    </main>
+    <footer role="contentinfo">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>关于我</h3>
+                    <p>我是一个热爱学习和分享的技术爱好者，欢迎访问我的个人网站。</p>
+                </div>
+                <div class="footer-column">
+                    <h3>快速链接</h3>
+                    <ul>
+                        <li><a href="index.html">首页</a></li>
+                        <li><a href="about.html">个人简历</a></li>
+                        <li><a href="blog.html">学习记录</a></li>
+                        <li><a href="resources.html">资料展示</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>联系方式</h3>
+                    <ul>
+                        <li><a href="#"><i class="fas fa-envelope"></i> 邮箱</a></li>
+                        <li><a href="#"><i class="fab fa-github"></i> GitHub</a></li>
+                        <li><a href="#"><i class="fab fa-weixin"></i> 微信</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 个人网站. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 回到顶部按钮 -->
+    <div class="back-to-top">
+        <i class="fas fa-arrow-up"></i>
+    </div>
+
+    <script src="lib/marked.min.js?v=20251119"></script>
+    <!-- 密码保护脚本 -->
+    <script src="js/password-redirect.js"></script>
+    <script src="js/main.js?v=20251119"></script>
+    
+    <!-- 实时时间显示脚本 -->
+    <script>
+        // 实时更新时间
+        function updateCurrentTime() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            const weekDays = ['日', '一', '二', '三', '四', '五', '六'];
+            const weekDay = weekDays[now.getDay()];
+            
+            const timeString = `${year}年${month}月${day}日 星期${weekDay} ${hours}:${minutes}:${seconds}`;
+            document.getElementById('current-time').textContent = timeString;
+        }
+        
+        // 页面加载时更新一次时间，然后每秒更新一次
+        window.onload = function() {
+            updateCurrentTime();
+            setInterval(updateCurrentTime, 1000);
+        };
+    </script>
+
+    <script>
+        // 从URL获取文件参数
+        function getUrlParameter(name) {
+            name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+            const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+            const results = regex.exec(location.search);
+            return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+        }
+
+        // 解析YAML frontmatter
+        function parseFrontMatter(content) {
+            // 尝试提取YAML frontmatter
+            const frontmatterRegex = /^---([\s\S]*?)---\s*/;
+            const match = content.match(frontmatterRegex);
+            
+            const meta = {};
+            let cleanContent = content;
+            
+            if (match && match[1]) {
+                cleanContent = content.replace(frontmatterRegex, '');
+                const frontmatter = match[1].trim();
+                
+                // 简单解析YAML格式
+                const lines = frontmatter.split('\n');
+                lines.forEach(line => {
+                    // 忽略空行和注释
+                    if (!line.trim() || line.trim().startsWith('#')) return;
+                    
+                    const colonIndex = line.indexOf(':');
+                    if (colonIndex > 0) {
+                        const key = line.substring(0, colonIndex).trim();
+                        let value = line.substring(colonIndex + 1).trim();
+                        
+                        // 处理数组
+                        if (value.startsWith('[') && value.endsWith(']')) {
+                            // 简单数组解析
+                            value = value
+                                .substring(1, value.length - 1)
+                                .split(',')
+                                .map(item => item.trim().replace(/['"]/g, ''));
+                        } else {
+                            // 移除字符串引号
+                            value = value.replace(/['"]/g, '');
+                        }
+                        
+                        meta[key] = value;
+                    }
+                });
+            }
+            
+            return { meta, content: cleanContent };
+        }
+
+        // 移除YAML frontmatter的函数（与about.html中相同）
+        function removeYamlFrontmatter(markdown) {
+            // 正则表达式匹配YAML frontmatter（---开始和结束的部分）
+            const frontmatterRegex = /^---[\s\S]*?---\s*/;
+            return markdown.replace(frontmatterRegex, '');
+        }
+
+        // 加载文章内容 - 直接从文件系统加载
+        function loadArticle() {
+            const filePath = getUrlParameter('file');
+            
+            if (!filePath) {
+                const contentElement = document.getElementById('article-content');
+                contentElement.innerHTML = `
+                    <div style="text-align: center; padding: 40px;">
+                        <i class="fas fa-exclamation-circle" style="font-size: 48px; color: #e74c3c; margin-bottom: 20px;"></i>
+                        <h3>文章未找到</h3>
+                        <p>请检查文章链接是否正确</p>
+                        <a href="blog.html" class="btn btn-primary" style="margin-top: 20px;">返回文章列表</a>
+                    </div>
+                `;
+                return;
+            }
+            
+            const contentElement = document.getElementById('article-content');
+            
+            // 显示加载状态
+            contentElement.innerHTML = '<div class="loading"><div class="spinner"></div> 正在加载文章内容...</div>';
+            
+            // 确保marked库已加载
+            if (typeof marked === 'undefined') {
+                setTimeout(() => {
+                    if (typeof marked === 'undefined') {
+                        contentElement.innerHTML = `
+                            <div style="text-align: center; padding: 40px;">
+                                <i class="fas fa-exclamation-triangle" style="font-size: 48px; color: #e74c3c; margin-bottom: 20px;"></i>
+                                <h3>Markdown渲染库未加载</h3>
+                                <p>请检查lib/marked.min.js文件是否存在</p>
+                            </div>
+                        `;
+                        return;
+                    }
+                    // 重试加载
+                    fetchArticle(filePath);
+                }, 500);
+            } else {
+                fetchArticle(filePath);
+            }
+        }
+        
+        // 从文件系统获取文章
+        function fetchArticle(filePath) {
+            const contentElement = document.getElementById('article-content');
+            
+            // 动态构建适合GitHub Pages的路径
+            let fullPath;
+            
+            // 检查是否在GitHub Pages环境下
+            if (window.location.hostname.endsWith('github.io')) {
+                // 对于用户网站（如guoguoapi.github.io），直接使用根路径
+                // 无论访问哪个页面，路径都应该是：/filePath
+                fullPath = `/${filePath}`;
+            } else {
+                // 本地环境，直接使用相对路径
+                fullPath = filePath;
+            }
+            
+            // 尝试加载文章文件
+            fetch(fullPath)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP错误! 状态: ${response.status}`);
+                    }
+                    return response.text();
+                })
+                .catch(error => {
+                    // 尝试使用备用路径
+                    const backupPath = filePath.startsWith('/') ? filePath : `/${filePath}`;
+                    if (backupPath !== fullPath) {
+                        return fetch(backupPath)
+                            .then(response => {
+                                if (!response.ok) {
+                                    throw new Error(`备用路径HTTP错误! 状态: ${response.status}`);
+                                }
+                                return response.text();
+                            });
+                    }
+                    throw error;
+                })
+                .then(markdownText => {
+                    // 解析元数据
+                const parser = window.parseFrontMatter || parseFrontMatter;
+                const { content, meta } = parser(markdownText);
+                    
+                    // 更新页面标题和元数据
+                    if (meta.title) {
+                        document.getElementById('article-title').textContent = meta.title;
+                        document.title = meta.title + ' - 个人网站';
+                    }
+                    
+                    if (meta.date) {
+                        document.getElementById('article-date').innerHTML = `<i class="fas fa-calendar-alt"></i> ${meta.date}`;
+                    }
+                    
+                    // 添加分类和标签
+                    const metaElement = document.getElementById('article-meta');
+                    if (meta.category) {
+                        const categorySpan = document.createElement('span');
+                        categorySpan.className = 'tag ' + meta.category;
+                        categorySpan.textContent = getCategoryName(meta.category);
+                        metaElement.appendChild(categorySpan);
+                    }
+                    
+                    if (meta.tags && Array.isArray(meta.tags)) {
+                        meta.tags.forEach(tag => {
+                            const tagSpan = document.createElement('span');
+                            tagSpan.className = 'tag';
+                            tagSpan.textContent = tag;
+                            metaElement.appendChild(tagSpan);
+                        });
+                    }
+                    
+                    try {
+                        // 设置marked选项
+                        marked.setOptions({
+                            breaks: true,
+                            gfm: true,
+                            headerIds: true,
+                            mangle: false
+                        });
+                        
+                        // 渲染Markdown内容（已移除frontmatter）
+                        const htmlContent = marked.parse(content);
+                        contentElement.innerHTML = htmlContent;
+                        
+                        // 为渲染后的链接添加target="_blank"
+                        const links = contentElement.querySelectorAll('a');
+                        links.forEach(link => {
+                            if (link.href.startsWith('http')) {
+                                link.setAttribute('target', '_blank');
+                                link.setAttribute('rel', 'noopener noreferrer');
+                            }
+                        });
+                        const imgs = contentElement.querySelectorAll('img');
+                        imgs.forEach(img => {
+                            img.setAttribute('loading', 'lazy');
+                            img.setAttribute('decoding', 'async');
+                        });
+                    } catch (e) {
+                        console.error('Markdown渲染错误:', e);
+                        contentElement.innerHTML = `
+                            <div style="text-align: center; padding: 40px;">
+                                <i class="fas fa-exclamation-circle" style="font-size: 48px; color: #f39c12; margin-bottom: 20px;"></i>
+                                <h3>文章内容渲染失败</h3>
+                                <p>Markdown格式可能有问题</p>
+                            </div>
+                        `;
+                    }
+                })
+                .catch(error => {
+                    console.error('加载文章失败:', error);
+                    contentElement.innerHTML = `
+                        <div style="text-align: center; padding: 40px;">
+                            <i class="fas fa-exclamation-circle" style="font-size: 48px; color: #e74c3c; margin-bottom: 20px;"></i>
+                            <h3>文章未找到</h3>
+                            <p>未找到指定的文章文件: ${filePath}</p>
+                            <a href="blog.html" class="btn btn-primary" style="margin-top: 20px;">返回文章列表</a>
+                        </div>
+                    `;
+                });
+        }
+
+        // 加载相关文章 - 从assets/posts.json动态获取
+        function loadRelatedArticles() {
+            const relatedContainer = document.getElementById('related-articles');
+            
+            // 显示加载状态
+            relatedContainer.innerHTML = '<div class="loading"><div class="spinner"></div> 正在加载相关推荐...</div>';
+            
+            // 获取当前文章文件路径
+            const currentFilePath = getUrlParameter('file');
+            
+            // 动态构建适合GitHub Pages的路径
+            let postsUrl;
+            
+            // 检查是否在GitHub Pages环境下
+            if (window.location.hostname.endsWith('github.io')) {
+                // 对于用户网站（如guoguoapi.github.io），直接使用根路径
+                // 无论访问哪个页面，路径都应该是：/assets/posts.json
+                postsUrl = '/assets/posts.json';
+            } else {
+                // 本地环境，直接使用相对路径
+                postsUrl = 'assets/posts.json';
+            }
+            
+            // 尝试从assets/posts.json加载所有文章
+            fetch(postsUrl)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('posts.json加载失败');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // 转换为相关推荐需要的格式
+                    const allArticles = data.map(article => ({
+                        title: article.title,
+                        summary: article.summary,
+                        file: `blog-detail.html?file=${article.file}`
+                    }));
+                    
+                    // 过滤掉当前文章
+                    const relatedArticles = allArticles.filter(article => 
+                        !article.file.includes(currentFilePath)
+                    );
+                    
+                    // 最多显示3篇相关文章
+                    const limitedRelatedArticles = relatedArticles.slice(0, 3);
+                    
+                    if (limitedRelatedArticles.length === 0) {
+                        relatedContainer.innerHTML = "<p style='text-align: center;'>暂无相关推荐</p>";
+                        return;
+                    }
+                    
+                    const cardContainer = document.createElement('div');
+                    cardContainer.className = 'card-container';
+                    
+                    limitedRelatedArticles.forEach(article => {
+                        const card = document.createElement('div');
+                        card.className = 'card';
+                        card.innerHTML = `
+                            <div class="card-content">
+                                <h3 class="card-title">${article.title}</h3>
+                                <p class="card-description">${article.summary}</p>
+                                <a href="${article.file}" class="card-link">
+                                    阅读全文 <i class="fas fa-arrow-right"></i>
+                                </a>
+                            </div>
+                        `;
+                        cardContainer.appendChild(card);
+                    });
+                    
+                    relatedContainer.innerHTML = '';
+                    relatedContainer.appendChild(cardContainer);
+                })
+                .catch(error => {
+                    console.error('加载相关推荐失败:', error);
+                    relatedContainer.innerHTML = "<p style='text-align: center;'>暂无相关推荐</p>";
+                });
+        }
+
+        // 获取分类名称
+        function getCategoryName(category) {
+            const categoryMap = {
+                'tech': '技术',
+                'life': '生活',
+                'note': '笔记'
+            };
+            return categoryMap[category] || category;
+        }
+
+        // 页面加载时初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            loadArticle();
+            loadRelatedArticles();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://guoguoapi.github.io/my-personal-site/sitemap.xml

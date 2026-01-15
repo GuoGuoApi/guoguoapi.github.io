@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人网站 - 首页</title>
+    <meta name="description" content="个人网站首页，包含个人简历、学习记录和资料展示。">
+    <meta property="og:title" content="个人网站 - 首页">
+    <meta property="og:description" content="个人简历、学习记录和资料展示的平台。">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary">
+    <link rel="stylesheet" href="css/style.css?v=20251119">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav aria-label="主导航">
+        <div class="nav-container">
+            <a href="index.html" class="logo">个人网站</a>
+            <ul class="nav-links" id="nav-links">
+                <li><a href="index.html"><i class="fas fa-home"></i> 首页</a></li>
+                <li><a href="about.html"><i class="fas fa-user"></i> 个人简历</a></li>
+                <li><a href="blog.html"><i class="fas fa-book"></i> 学习记录</a></li>
+                <li><a href="resources.html"><i class="fas fa-folder"></i> 资料展示</a></li>
+            </ul>
+            <div class="current-time" id="current-time"></div>
+            <div class="hamburger" role="button" tabindex="0" aria-label="打开导航菜单" aria-controls="nav-links" aria-expanded="false">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <a href="#main" class="skip-link">跳到内容</a>
+    <main id="main" role="main">
+
+    <!-- 英雄区域 -->
+    <section class="hero hero--home">
+        <div class="hero-content">
+            <!-- 头像部分 -->
+            <div class="avatar-container">
+                <img src="storage/images/avatar.jpg" alt="个人头像" class="avatar">
+            </div>
+            
+            <!-- 个人信息 -->
+            <div class="personal-info">
+                <h1>欢迎来到我的个人网站</h1>
+                <p class="subtitle">这里是我的个人简历、学习记录和资料展示的平台</p>
+                <p class="quote">持续学习，不断进步</p>
+            </div>
+            
+            <!-- 操作按钮 -->
+            <div class="action-buttons">
+                <a href="about.html" class="btn btn-primary">了解更多</a>
+                <a href="blog.html" class="btn btn-secondary">学习记录</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 网站介绍 -->
+    <section class="container">
+        <div class="card-container">
+            <div class="card">
+                <div class="card-content">
+                    <h3 class="card-title"><i class="fas fa-user"></i> 个人简历</h3>
+                    <p class="card-description">了解我的个人信息、教育背景、工作经历和专业技能。</p>
+                    <a href="about.html" class="card-link">查看简历 <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-content">
+                    <h3 class="card-title"><i class="fas fa-book"></i> 学习记录</h3>
+                    <p class="card-description">记录我的学习心得、技术分享和项目经验。</p>
+                    <a href="blog.html" class="card-link">阅读记录 <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-content">
+                    <h3 class="card-title"><i class="fas fa-folder"></i> 资料展示</h3>
+                    <p class="card-description">分享我收集整理的各类资料文档、图片等资源。</p>
+                    <a href="resources.html" class="card-link">浏览资料 <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 最新动态 -->
+    <section class="container">
+        <h2 style="text-align: center; margin-bottom: 30px;">最新动态</h2>
+        <div id="updates-container">
+            <!-- 加载中提示 -->
+            <div id="loading-indicator">
+                <p style="text-align: center;"><i class="fas fa-spinner fa-spin"></i> 加载最新动态中...</p>
+            </div>
+            
+            <!-- 默认内容，加载失败时显示 -->
+            <div id="default-updates" style="display: none;">
+                <div class="update-item">
+                    <div class="update-header">
+                        <h3 class="update-title">网站刚刚上线</h3>
+                        <span class="update-date"><i class="fas fa-calendar-alt"></i> 2023-10-21</span>
+                    </div>
+                    <p class="update-description">欢迎访问我的个人网站，这里将持续更新我的学习和工作内容。</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 查看更多按钮 -->
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="updates.html" class="view-more-button">
+                查看更多动态 <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+    </section>
+    
+    <script>
+        // 从Markdown文件加载最新动态
+        async function loadUpdatesFromMarkdown() {
+            // 获取DOM元素
+            const container = document.getElementById('updates-container');
+            const loadingIndicator = document.getElementById('loading-indicator');
+            const defaultUpdates = document.getElementById('default-updates');
+            
+            try {
+                // 读取更新日志MD文件，添加缓存控制确保获取最新内容
+                const response = await fetch('assets/updates.md?' + new Date().getTime());
+                if (!response.ok) {
+                    throw new Error('Failed to load updates');
+                }
+                
+                const markdownContent = await response.text();
+                const updates = [];
+                
+                // 解析MD文件中的多个更新条目
+                // 查找所有以---开头的元数据块
+                const sections = markdownContent.split('---');
+                
+                for (let i = 1; i < sections.length; i += 2) {
+                    // 解析元数据
+                    const metadataBlock = sections[i].trim();
+                    const content = sections[i + 1] ? sections[i + 1].trim() : '';
+                    
+                    // 提取标题、日期、描述等元数据
+                    const metadata = {};
+                    metadataBlock.split('\n').forEach(line => {
+                        if (line.includes(':')) {
+                            const i = line.indexOf(':');
+                            const key = line.substring(0, i).trim();
+                            let value = line.substring(i + 1).trim();
+                            if (value.startsWith('[') && value.endsWith(']')) {
+                                value = value.substring(1, value.length - 1).split(',').map(v => v.trim().replace(/['"]/g, ''));
+                            } else {
+                                value = value.replace(/^["']|["']$/g, '');
+                            }
+                            metadata[key] = value;
+                        }
+                    });
+                    
+                    // 确保必要的字段存在
+                    if (metadata.title && metadata.date) {
+                        updates.push({
+                            title: metadata.title,
+                            date: metadata.date,
+                            description: metadata.description || content.split('\n')[0],
+                            content: content
+                        });
+                    }
+                }
+                
+                // 按日期降序排序（最新的在前）
+                updates.sort((a, b) => new Date(b.date) - new Date(a.date));
+                
+                // 隐藏加载指示器
+                loadingIndicator.style.display = 'none';
+                defaultUpdates.style.display = 'none';
+                
+                // 如果没有更新条目，显示默认内容
+                if (updates.length === 0) {
+                    defaultUpdates.style.display = 'block';
+                    return;
+                }
+                
+                // 清空容器并渲染更新条目
+                    container.innerHTML = '';
+                    
+                    // 只显示最新的3条动态
+                    const displayCount = 3;
+                    const recentUpdates = updates.slice(0, displayCount);
+                    
+                    if (recentUpdates.length > 0) {
+                        recentUpdates.forEach(update => {
+                            const updateItem = document.createElement('div');
+                            updateItem.className = 'update-item';
+                            updateItem.innerHTML = `
+                                <div class="update-header">
+                                    <h3 class="update-title">${update.title}</h3>
+                                    <span class="update-date"><i class="fas fa-calendar-alt"></i> ${update.date}</span>
+                                </div>
+                                <p class="update-description">${update.description}</p>
+                                ${Array.isArray(update.tags) && update.tags.length ? `<div style="margin-top:8px;">${update.tags.map(t => `<span class='tag'>${t}</span>`).join('')}</div>` : ''}
+                            `;
+                            container.appendChild(updateItem);
+                        });
+                        
+                        console.log('Updates loaded successfully:', updates);
+                        
+                        // 内容加载完成后重新初始化搜索功能
+                        if (typeof reinitSearch === 'function') {
+                            reinitSearch();
+                        }
+                    } else {
+                        // 如果没有更新条目，显示默认内容
+                        defaultUpdates.style.display = 'block';
+                        console.log('No updates found, showing default content');
+                    }
+            } catch (error) {
+                console.error('Error loading updates:', error);
+                // 加载失败时显示默认内容
+                loadingIndicator.style.display = 'none';
+                defaultUpdates.style.display = 'block';
+            }
+        }
+        
+        // 页面加载后执行
+        document.addEventListener('DOMContentLoaded', function() {
+            loadUpdatesFromMarkdown();
+        });
+    </script>
+
+    <!-- 页脚 -->
+    </main>
+    <footer role="contentinfo">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>关于我</h3>
+                    <p>我是一个热爱学习和分享的技术爱好者，欢迎访问我的个人网站。</p>
+                </div>
+                <div class="footer-column">
+                    <h3>快速链接</h3>
+                    <ul>
+                        <li><a href="index.html">首页</a></li>
+                        <li><a href="about.html">个人简历</a></li>
+                        <li><a href="blog.html">学习记录</a></li>
+                        <li><a href="resources.html">资料展示</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>联系方式</h3>
+                    <ul>
+                        <li><a href="mailto:****@gmail.com"><i class="fas fa-envelope"></i> 邮箱</a></li>
+                        <li><a href="https://github.com/guoguoapi" target="_blank"><i class="fab fa-github"></i> GitHub</a></li>
+                        <li><a href="#"><i class="fab fa-weixin"></i> 微信</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 个人网站. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 回到顶部按钮 -->
+    <div class="back-to-top">
+        <i class="fas fa-arrow-up"></i>
+    </div>
+
+    <!-- 密码保护脚本 -->
+    <script src="js/password-redirect.js"></script>
+    <script src="js/main.js?v=20251119" defer></script>
+    
+    <!-- 实时时间显示脚本 -->
+    <script>
+        // 实时更新时间
+        function updateCurrentTime() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            const weekDays = ['日', '一', '二', '三', '四', '五', '六'];
+            const weekDay = weekDays[now.getDay()];
+            
+            const timeString = `${year}年${month}月${day}日 星期${weekDay} ${hours}:${minutes}:${seconds}`;
+            document.getElementById('current-time').textContent = timeString;
+        }
+        
+        // 页面加载时更新一次时间，然后每秒更新一次
+        window.onload = function() {
+            updateCurrentTime();
+            setInterval(updateCurrentTime, 1000);
+        };
+    </script>
+    
+    </body>
+    </html>

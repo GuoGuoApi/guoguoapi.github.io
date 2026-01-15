@@ -1,0 +1,36 @@
+{
+  "config": {
+    "sections": [
+      {"id": "algorithm", "name": "算法学习", "icon": "🧮"},
+      {"id": "office", "name": "办公工具", "icon": "💼"},
+      {"id": "programming", "name": "编程开发", "icon": "💻"},
+      {"id": "design", "name": "设计创意", "icon": "🎨"},
+      {"id": "language", "name": "语言学习", "icon": "🌐"}
+    ],
+    "types": [
+      {"id": "documents", "name": "文档", "icon": "📄", "extensions": ["pdf", "doc", "docx", "txt", "md"]},
+      {"id": "images", "name": "图片", "icon": "🖼️", "extensions": ["jpg", "jpeg", "png", "gif", "svg"]},
+      {"id": "videos", "name": "视频", "icon": "🎬", "extensions": ["mp4", "avi", "mov"]},
+      {"id": "audios", "name": "音频", "icon": "🎵", "extensions": ["mp3", "wav", "flac"]},
+      {"id": "others", "name": "其他", "icon": "📦", "extensions": []}
+    ]
+  },
+  "resources": [
+    {
+      "id": "1",
+      "name": "附件2  机械工程学科关于申请学位者发表学术论文的补充规定2024.12.02.pdf",
+      "file": "storage/documents/附件2  机械工程学科关于申请学位者发表学术论文的补充规定2024.12.02.pdf",
+      "type": "documents",
+      "description": "机械工程学科关于申请学位者发表学术论文的补充规定。",
+      "date": "2026-01-01",
+      "size": "0.17MB",
+      "tags": ["文档"],
+      "section": "office",
+      "author": "机械学院",
+      "format": "PDF",
+      "categories": ["技术文档", "办公工具"],
+      "thumbnail": null,
+      "download_count": 0
+    }
+  ]
+}

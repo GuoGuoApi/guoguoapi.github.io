@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学习记录 - 个人网站</title>
+    <meta name="description" content="学习记录页，汇总技术分享与学习笔记。">
+    <meta property="og:title" content="学习记录 - 个人网站">
+    <meta property="og:description" content="技术分享与学习笔记的合集。">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary">
+    <link rel="stylesheet" href="css/style.css?v=20251119">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav aria-label="主导航">
+        <div class="nav-container">
+            <a href="index.html" class="logo">个人网站</a>
+            <ul class="nav-links" id="nav-links">
+                <li><a href="index.html"><i class="fas fa-home"></i> 首页</a></li>
+                <li><a href="about.html"><i class="fas fa-user"></i> 个人简历</a></li>
+                <li><a href="blog.html"><i class="fas fa-book"></i> 学习记录</a></li>
+                <li><a href="resources.html"><i class="fas fa-folder"></i> 资料展示</a></li>
+            </ul>
+            <div class="current-time" id="current-time"></div>
+            <div class="hamburger" role="button" tabindex="0" aria-label="打开导航菜单" aria-controls="nav-links" aria-expanded="false">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <a href="#main" class="skip-link">跳到内容</a>
+    <main id="main" role="main">
+
+    <!-- 页面标题 -->
+    <section class="hero hero--compact">
+        <div class="container">
+            <h1>学习记录</h1>
+            <p>记录我的学习心得、技术分享和项目经验</p>
+        </div>
+    </section>
+
+    <!-- 搜索框 -->
+    <section class="container search-section">
+        <div class="search-container">
+            <input type="text" class="search-input" placeholder="搜索学习记录...">
+        </div>
+    </section>
+
+    <!-- 分类标签 -->
+    <section class="container">
+        <div style="text-align: center;">
+            <span class="tag active" onclick="filterByCategory('all')">全部</span>
+            <span class="tag tech" onclick="filterByCategory('tech')">技术</span>
+            <span class="tag life" onclick="filterByCategory('life')">生活</span>
+            <span class="tag note" onclick="filterByCategory('note')">笔记</span>
+        </div>
+    </section>
+
+    <!-- 博客文章列表 -->
+    <section class="container">
+        <div id="blog-list">
+            <!-- 博客文章将通过JavaScript动态加载 -->
+            <div class="loading">
+                <div class="spinner"></div>
+                <span>正在加载文章列表...</span>
+            </div>
+        </div>
+    </section>
+
+
+
+    <!-- 页脚 -->
+    </main>
+    <footer role="contentinfo">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>关于我</h3>
+                    <p>我是一个热爱学习和分享的技术爱好者，欢迎访问我的个人网站。</p>
+                </div>
+                <div class="footer-column">
+                    <h3>快速链接</h3>
+                    <ul>
+                        <li><a href="index.html">首页</a></li>
+                        <li><a href="about.html">个人简历</a></li>
+                        <li><a href="blog.html">学习记录</a></li>
+                        <li><a href="resources.html">资料展示</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>联系方式</h3>
+                    <ul>
+                        <li><a href="#"><i class="fas fa-envelope"></i> 邮箱</a></li>
+                        <li><a href="#"><i class="fab fa-github"></i> GitHub</a></li>
+                        <li><a href="#"><i class="fab fa-weixin"></i> 微信</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 个人网站. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 回到顶部按钮 -->
+    <div class="back-to-top">
+        <i class="fas fa-arrow-up"></i>
+    </div>
+
+    <script src="lib/marked.min.js?v=20251119"></script>
+    <!-- 密码保护脚本 -->
+    <script src="js/password-redirect.js"></script>
+    <script src="js/main.js?v=20251119"></script>
+    <script>
+        // 实际文章数据 - 将动态填充
+
+        // 从文件系统动态加载博客文章列表
+        function loadBlogPosts() {
+            const blogList = document.getElementById('blog-list');
+            
+            // 显示加载状态
+            blogList.innerHTML = '<div class="loading"><div class="spinner"></div> 正在加载文章列表...</div>';
+            
+            const blogPosts = [];
+            // 动态构建适合GitHub Pages的路径
+            let postsUrl;
+            
+            // 检查是否在GitHub Pages环境下
+            if (window.location.hostname.endsWith('github.io')) {
+                // 对于用户网站（如guoguoapi.github.io），直接使用根路径
+                // 无论访问哪个页面，路径都应该是：/assets/posts.json
+                postsUrl = '/assets/posts.json';
+            } else {
+                // 本地环境，直接使用相对路径
+                postsUrl = 'assets/posts.json';
+            }
+            
+            fetch(postsUrl)
+                .then(r => { if (!r.ok) throw new Error('posts.json加载失败'); return r.json(); })
+                .then(data => {
+                    data.forEach((p, idx) => {
+                        blogPosts.push({
+                            id: idx + 1,
+                            title: p.title,
+                            date: p.date,
+                            category: p.category || 'tech',
+                            tags: Array.isArray(p.tags) ? p.tags : [],
+                            summary: p.summary || '',
+                            file: p.file
+                        });
+                    });
+                })
+                .catch(() => {
+                    const articleFiles = [
+                        "notes/2023-10-20-JavaScript基础学习笔记.md",
+                        "notes/2025-10-21-Python基础学习笔记.md",
+                        "notes/2025-01-07-GitHub静态网页部署教程.md"
+                    ];
+                    const parser = window.parseFrontMatter || parseFrontMatter;
+                    
+                    // 构建适合GitHub Pages的路径
+                    const promises = articleFiles.map(file => {
+                        let fullPath;
+                        // 检查是否在GitHub Pages环境下
+                        if (window.location.hostname.endsWith('github.io')) {
+                            // 对于用户网站（如guoguoapi.github.io），直接使用根路径
+                            // 无论访问哪个页面，路径都应该是：/filePath
+                            fullPath = '/' + file;
+                        } else {
+                            // 本地环境，直接使用相对路径
+                            fullPath = file;
+                        }
+                        
+                        return fetch(fullPath)
+                            .then(resp => { if (!resp.ok) throw new Error(file); return resp.text(); })
+                            .then(content => {
+                                const { meta } = parser(content);
+                                const fileName = file.split('/').pop();
+                                const dateMatch = fileName.match(/^(\d{4}-\d{2}-\d{2})/);
+                                const dateFromFileName = dateMatch ? dateMatch[1] : '';
+                                const titleFromFileName = fileName.replace(/^\d{4}-\d{2}-\d{2}-/, '').replace(/\.md$/, '');
+                                blogPosts.push({
+                                    id: blogPosts.length + 1,
+                                    title: meta.title || titleFromFileName || '未命名文章',
+                                    date: meta.date || dateFromFileName || '未知日期',
+                                    category: meta.category || 'tech',
+                                    tags: meta.tags || [],
+                                    summary: meta.summary || '',
+                                    file: file
+                                });
+                            })
+                            .catch(() => {});
+                    });
+                    return Promise.all(promises);
+                })
+                .finally(() => {
+                    blogPosts.sort((a, b) => new Date(b.date) - new Date(a.date));
+                    blogList.innerHTML = '';
+                    if (blogPosts.length === 0) {
+                        blogList.innerHTML = '<div class="empty-state"><i class="fas fa-book-open"></i><p>暂无博客文章</p></div>';
+                        return;
+                    }
+                    blogPosts.forEach(post => {
+                        const card = document.createElement('div');
+                        card.className = `card searchable category-${post.category}`;
+                        card.innerHTML = `
+                            <div class="card-content">
+                                <h3 class="card-title">${post.title}</h3>
+                                <p class="card-description">${post.summary}</p>
+                                <div style="margin-top: 15px;">
+                                    <span class="tag"><i class="fas fa-calendar-alt"></i> ${post.date}</span>
+                                    <span class="tag ${post.category}">${getCategoryName(post.category)}</span>
+                                    ${Array.isArray(post.tags) ? post.tags.map(tag => `<span class="tag">${tag}</span>`).join('') : ''}
+                                </div>
+                                <div style="margin-top: 15px;">
+                                    <a href="blog-detail.html?file=${encodeURIComponent(post.file)}" class="card-link">阅读全文 <i class="fas fa-arrow-right"></i></a>
+                                </div>
+                            </div>`;
+                        blogList.appendChild(card);
+                    });
+                    if (typeof reinitSearch === 'function') {
+                        reinitSearch();
+                    }
+                });
+        }
+
+        // 根据分类筛选文章
+        function filterByCategory(category) {
+            const cards = document.querySelectorAll('.card');
+            const tags = document.querySelectorAll('.tag');
+            
+            // 更新标签样式
+            tags.forEach(tag => {
+                tag.classList.remove('active');
+                if ((category === 'all' && tag.textContent === '全部') || 
+                    (category !== 'all' && tag.classList.contains(category))) {
+                    tag.classList.add('active');
+                }
+            });
+            
+            // 筛选文章
+            cards.forEach(card => {
+                if (category === 'all' || card.classList.contains(`category-${category}`)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // 获取分类显示名称
+        function getCategoryName(category) {
+            const categories = {
+                'tech': '技术',
+                'life': '生活',
+                'note': '笔记',
+                'share': '分享'
+            };
+            return categories[category] || '其他';
+        }
+        
+        // 解析YAML frontmatter
+        function parseFrontMatter(content) {
+            // 尝试提取YAML frontmatter
+            const frontmatterRegex = /^---([\s\S]*?)---\s*/;
+            const match = content.match(frontmatterRegex);
+            
+            const meta = {};
+            let cleanContent = content;
+            
+            if (match && match[1]) {
+                cleanContent = content.replace(frontmatterRegex, '');
+                const frontmatter = match[1].trim();
+                
+                // 简单解析YAML格式
+                const lines = frontmatter.split('\n');
+                lines.forEach(line => {
+                    // 忽略空行和注释
+                    if (!line.trim() || line.trim().startsWith('#')) return;
+                    
+                    const colonIndex = line.indexOf(':');
+                    if (colonIndex > 0) {
+                        const key = line.substring(0, colonIndex).trim();
+                        let value = line.substring(colonIndex + 1).trim();
+                        
+                        // 处理数组
+                        if (value.startsWith('[') && value.endsWith(']')) {
+                            // 简单数组解析
+                            value = value
+                                .substring(1, value.length - 1)
+                                .split(',')
+                                .map(item => item.trim().replace(/['"]/g, ''));
+                        } else {
+                            // 移除字符串引号
+                            value = value.replace(/['"]/g, '');
+                        }
+                        
+                        meta[key] = value;
+                    }
+                });
+            }
+            
+            return { meta, content: cleanContent };
+        }
+
+        // 页面加载时初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            loadBlogPosts();
+        });
+    </script>
+    
+    <!-- 实时时间显示脚本 -->
+    <script>
+        // 实时更新时间
+        function updateCurrentTime() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            const weekDays = ['日', '一', '二', '三', '四', '五', '六'];
+            const weekDay = weekDays[now.getDay()];
+            
+            const timeString = `${year}年${month}月${day}日 星期${weekDay} ${hours}:${minutes}:${seconds}`;
+            document.getElementById('current-time').textContent = timeString;
+        }
+        
+        // 页面加载时更新一次时间，然后每秒更新一次
+        window.onload = function() {
+            updateCurrentTime();
+            setInterval(updateCurrentTime, 1000);
+        };
+    </script>
+</body>
+</html>

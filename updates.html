@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>所有动态 - 个人网站</title>
+    <meta name="description" content="网站所有更新和动态列表，按时间顺序排列。">
+    <meta property="og:title" content="所有动态 - 个人网站">
+    <meta property="og:description" content="网站所有更新和动态列表。">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary">
+    <link rel="stylesheet" href="css/style.css?v=20251119">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav aria-label="主导航">
+        <div class="nav-container">
+            <a href="index.html" class="logo">个人网站</a>
+            <ul class="nav-links" id="nav-links">
+                <li><a href="index.html"><i class="fas fa-home"></i> 首页</a></li>
+                <li><a href="about.html"><i class="fas fa-user"></i> 个人简历</a></li>
+                <li><a href="blog.html"><i class="fas fa-book"></i> 学习记录</a></li>
+                <li><a href="resources.html"><i class="fas fa-folder"></i> 资料展示</a></li>
+            </ul>
+            <div class="current-time" id="current-time"></div>
+            <div class="hamburger" role="button" tabindex="0" aria-label="打开导航菜单" aria-controls="nav-links" aria-expanded="false">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <a href="#main" class="skip-link">跳到内容</a>
+    <main id="main" role="main">
+
+    <!-- 英雄区域 -->
+    <section class="hero">
+        <div class="container">
+            <h1>最新动态</h1>
+            <p>这里记录了网站的所有更新和动态，按时间顺序排列。</p>
+        </div>
+    </section>
+
+    <!-- 所有动态内容 -->
+    <section class="container">
+        <h2 style="text-align: center; margin-bottom: 40px;">所有动态</h2>
+        <div id="all-updates-container">
+            <!-- 加载中提示 -->
+            <div id="loading-indicator">
+                <p style="text-align: center;"><i class="fas fa-spinner fa-spin"></i> 加载动态中...</p>
+            </div>
+            
+            <!-- 加载失败时显示 -->
+            <div id="no-updates" style="display: none; text-align: center; padding: 50px 0;">
+                <p>暂无动态信息</p>
+                <a href="index.html" class="btn-primary" style="margin-top: 20px;">返回首页</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    </main>
+    <footer role="contentinfo">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>关于我</h3>
+                    <p>我是一个热爱学习和分享的技术爱好者，欢迎访问我的个人网站。</p>
+                </div>
+                <div class="footer-column">
+                    <h3>快速链接</h3>
+                    <ul>
+                        <li><a href="index.html">首页</a></li>
+                        <li><a href="about.html">个人简历</a></li>
+                        <li><a href="blog.html">学习记录</a></li>
+                        <li><a href="resources.html">资料展示</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>联系方式</h3>
+                    <ul>
+                        <li><a href="#"><i class="fas fa-envelope"></i> 邮箱</a></li>
+                        <li><a href="#"><i class="fab fa-github"></i> GitHub</a></li>
+                        <li><a href="#"><i class="fab fa-weixin"></i> 微信</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 个人网站. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 回到顶部按钮 -->
+    <div class="back-to-top">
+        <i class="fas fa-arrow-up"></i>
+    </div>
+
+    <script>
+        // 从Markdown文件加载所有动态
+        async function loadAllUpdatesFromMarkdown() {
+            // 获取DOM元素
+            const container = document.getElementById('all-updates-container');
+            const loadingIndicator = document.getElementById('loading-indicator');
+            const noUpdates = document.getElementById('no-updates');
+            
+            try {
+                // 读取更新日志MD文件，添加缓存控制确保获取最新内容
+                const response = await fetch('assets/updates.md?' + new Date().getTime());
+                if (!response.ok) {
+                    throw new Error('Failed to load updates');
+                }
+                
+                const markdownContent = await response.text();
+                const updates = [];
+                
+                // 解析MD文件中的多个更新条目
+                const sections = markdownContent.split('---');
+                
+                for (let i = 1; i < sections.length; i += 2) {
+                    // 解析元数据
+                    const metadataBlock = sections[i].trim();
+                    const content = sections[i + 1] ? sections[i + 1].trim() : '';
+                    
+                    // 提取标题、日期、描述等元数据
+                    const metadata = {};
+                    metadataBlock.split('\n').forEach(line => {
+                        if (line.includes(':')) {
+                            const i = line.indexOf(':');
+                            const key = line.substring(0, i).trim();
+                            let value = line.substring(i + 1).trim();
+                            if (value.startsWith('[') && value.endsWith(']')) {
+                                value = value.substring(1, value.length - 1).split(',').map(v => v.trim().replace(/['"]/g, ''));
+                            } else {
+                                value = value.replace(/^["']|["']$/g, '');
+                            }
+                            metadata[key] = value;
+                        }
+                    });
+                    
+                    // 确保必要的字段存在
+                    if (metadata.title && metadata.date) {
+                        updates.push({
+                            title: metadata.title,
+                            date: metadata.date,
+                            description: metadata.description || content.split('\n')[0],
+                            content: content
+                        });
+                    }
+                }
+                
+                // 按日期降序排序（最新的在前）
+                updates.sort((a, b) => new Date(b.date) - new Date(a.date));
+                
+                // 隐藏加载指示器
+                loadingIndicator.style.display = 'none';
+                
+                // 如果没有更新条目，显示默认内容
+                if (updates.length === 0) {
+                    noUpdates.style.display = 'block';
+                    return;
+                }
+                
+                // 清空容器并渲染所有更新条目
+                container.innerHTML = '';
+                
+                updates.forEach(update => {
+                    const updateItem = document.createElement('div');
+                    updateItem.className = 'update-item';
+                    updateItem.innerHTML = `
+                        <div class="update-header">
+                            <h3 class="update-title">${update.title}</h3>
+                            <span class="update-date"><i class="fas fa-calendar-alt"></i> ${update.date}</span>
+                        </div>
+                        <p class="update-description">${update.description}</p>
+                        ${Array.isArray(update.tags) && update.tags.length ? `<div style="margin-top:8px;">${update.tags.map(t => `<span class='tag'>${t}</span>`).join('')}</div>` : ''}
+                    `;
+                    container.appendChild(updateItem);
+                });
+                
+                console.log('All updates loaded successfully:', updates);
+                
+            } catch (error) {
+                console.error('Error loading updates:', error);
+                // 加载失败时显示默认内容
+                loadingIndicator.style.display = 'none';
+                noUpdates.style.display = 'block';
+            }
+        }
+        
+        // 页面加载后执行
+        document.addEventListener('DOMContentLoaded', function() {
+            loadAllUpdatesFromMarkdown();
+        });
+    </script>
+    
+    <!-- 实时时间显示脚本 -->
+    <script>
+        // 实时更新时间
+        function updateCurrentTime() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            const weekDays = ['日', '一', '二', '三', '四', '五', '六'];
+            const weekDay = weekDays[now.getDay()];
+            
+            const timeString = `${year}年${month}月${day}日 星期${weekDay} ${hours}:${minutes}:${seconds}`;
+            document.getElementById('current-time').textContent = timeString;
+        }
+        
+        // 页面加载时更新一次时间，然后每秒更新一次
+        window.onload = function() {
+            updateCurrentTime();
+            setInterval(updateCurrentTime, 1000);
+        };
+    </script>
+
+    <!-- 密码保护脚本 -->
+    <script src="js/password-redirect.js"></script>
+    <script src="js/main.js?v=20251119" defer></script>
+</body>
+</html>

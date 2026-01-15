@@ -1,0 +1,1410 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人网站 - 资料展示</title>
+    <meta name="description" content="资料展示页，分享各类文档、图片和其他资源。">
+    <meta property="og:title" content="资料展示 - 个人网站">
+    <meta property="og:description" content="分享各类文档、图片和其他资源。">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary">
+    <link rel="stylesheet" href="css/style.css?v=20251119">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- PDF.js 用于PDF预览 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav aria-label="主导航">
+        <div class="nav-container">
+            <a href="index.html" class="logo">个人网站</a>
+            <ul class="nav-links" id="nav-links">
+                <li><a href="index.html"><i class="fas fa-home"></i> 首页</a></li>
+                <li><a href="about.html"><i class="fas fa-user"></i> 个人简历</a></li>
+                <li><a href="blog.html"><i class="fas fa-book"></i> 学习记录</a></li>
+                <li><a href="resources.html"><i class="fas fa-folder"></i> 资料展示</a></li>
+            </ul>
+            <div class="current-time" id="current-time"></div>
+            <div class="hamburger" role="button" tabindex="0" aria-label="打开导航菜单" aria-controls="nav-links" aria-expanded="false">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <a href="#main" class="skip-link">跳到内容</a>
+    <main id="main" role="main">
+
+    <!-- 页面标题 -->
+    <section class="hero hero--compact">
+        <div class="container">
+            <h1>资料展示</h1>
+            <p>分享各类文档、图片和其他资源</p>
+        </div>
+    </section>
+
+    <!-- 搜索框 -->
+    <section class="container search-section">
+        <div class="search-container">
+            <input type="text" class="search-input" placeholder="搜索资料...">
+        </div>
+    </section>
+
+
+    <!-- 筛选区域 - 合并所有筛选功能为一个整体 -->
+    <section class="container filters-container">
+        <!-- 主要筛选：栏目和类型 -->
+        <div class="main-filters">
+            <!-- 栏目筛选 -->
+            <div class="filter-group">
+                <span class="filter-label">学习栏目：</span>
+                <div class="filter-tags">
+                    <span class="category-tag active" onclick="filterBySection(event, 'all')">全部栏目</span>
+                    <span class="category-tag" onclick="filterBySection(event, '算法学习')">算法学习</span>
+                    <span class="category-tag" onclick="filterBySection(event, '办公工具')">办公工具</span>
+                    <span class="category-tag" onclick="filterBySection(event, '学习笔记')">学习笔记</span>
+                    <span class="category-tag" onclick="filterBySection(event, '面试准备')">面试准备</span>
+                    <span class="category-tag" onclick="filterBySection(event, '素材资源')">素材资源</span>
+                </div>
+            </div>
+            
+            <!-- 类型筛选 -->
+            <div class="filter-group">
+                <span class="filter-label">资料类型：</span>
+                <div class="filter-tags">
+                    <span class="tag active" onclick="filterResources(event, 'all')">全部</span>
+                    <span class="tag" onclick="filterResources(event, 'documents')">文档</span>
+                    <span class="tag" onclick="filterResources(event, 'images')">图片</span>
+                    <span class="tag" onclick="filterResources(event, 'other')">其他</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 辅助筛选：时间和大小，左右分布 -->
+        <div class="secondary-filters">
+            <!-- 时间筛选（左侧） -->
+            <div class="left-filter">
+                <span class="filter-label">时间：</span>
+                <div class="filter-tags">
+                    <span class="secondary-tag active" onclick="filterByDate('all')">全部</span>
+                    <span class="secondary-tag" onclick="filterByDate('today')">今天</span>
+                    <span class="secondary-tag" onclick="filterByDate('week')">本周</span>
+                    <span class="secondary-tag" onclick="filterByDate('month')">本月</span>
+                    <span class="secondary-tag" onclick="filterByDate('year')">今年</span>
+                </div>
+            </div>
+            
+            <!-- 大小筛选（右侧） -->
+            <div class="right-filter">
+                <span class="filter-label">大小：</span>
+                <div class="filter-tags">
+                    <span class="secondary-tag active" onclick="filterBySize('all')">全部</span>
+                    <span class="secondary-tag" onclick="filterBySize('small')"><1MB</span>
+                    <span class="secondary-tag" onclick="filterBySize('medium')">1-10MB</span>
+                    <span class="secondary-tag" onclick="filterBySize('large')">10-100MB</span>
+                    <span class="secondary-tag" onclick="filterBySize('xlarge')">>100MB</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 资料列表 -->
+    <section class="container">
+        <div class="resources-list" id="resources-list">
+            <!-- 资料项目将通过JavaScript动态加载 -->
+            <div class="loading">
+                <div class="spinner"></div>
+                <span>正在加载资料列表...</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- 预览模态框 -->
+    <div id="previewModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="previewTitle">预览</h2>
+                <span class="close-btn" onclick="closePreviewModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <!-- 图片预览容器 -->
+                <div id="imagePreview" style="display: none;">
+                    <img id="previewImage" src="" alt="预览图片" loading="lazy" decoding="async">
+                </div>
+                
+                <!-- PDF预览容器 -->
+                <div id="pdfPreview" style="display: none;">
+                    <div class="pdf-controls">
+                        <button id="prevPage" onclick="prevPdfPage()"><i class="fas fa-chevron-left"></i></button>
+                        <span id="pageNum"></span>
+                        <button id="nextPage" onclick="nextPdfPage()"><i class="fas fa-chevron-right"></i></button>
+                    </div>
+                    <canvas id="pdfCanvas"></canvas>
+                </div>
+                
+                <!-- 文本预览容器 -->
+                <div id="textPreview" style="display: none;">
+                    <pre id="previewText"></pre>
+                </div>
+                
+                <!-- 不支持预览提示 -->
+                <div id="unsupportedPreview" style="display: none;">
+                    <div class="unsupported-icon">
+                        <i class="fas fa-exclamation-circle"></i>
+                    </div>
+                    <p>该文件类型暂不支持在线预览，请下载后查看。</p>
+                </div>
+                
+                <!-- 加载中提示 -->
+                <div id="previewLoading" style="display: none;">
+                    <div class="spinner"></div>
+                    <p>加载预览中...</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="downloadBtn" class="download-btn" onclick="downloadCurrentFile()">下载文件</button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- 页脚 -->
+    </main>
+    <footer role="contentinfo">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>关于我</h3>
+                    <p>我是一个热爱学习和分享的技术爱好者，欢迎访问我的个人网站。</p>
+                </div>
+                <div class="footer-column">
+                    <h3>快速链接</h3>
+                    <ul>
+                        <li><a href="index.html">首页</a></li>
+                        <li><a href="about.html">个人简历</a></li>
+                        <li><a href="blog.html">学习记录</a></li>
+                        <li><a href="resources.html">资料展示</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>联系方式</h3>
+                    <ul>
+                        <li><a href="#"><i class="fas fa-envelope"></i> 邮箱</a></li>
+                        <li><a href="#"><i class="fab fa-github"></i> GitHub</a></li>
+                        <li><a href="#"><i class="fab fa-weixin"></i> 微信</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 个人网站. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 回到顶部按钮 -->
+    <div class="back-to-top">
+        <i class="fas fa-arrow-up"></i>
+    </div>
+
+    <!-- 密码保护脚本 -->
+    <script src="js/password-redirect.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+        // 资源数据
+        let resourcesData = [];
+        // 配置数据
+        let configData = {};
+
+        // 从JSON配置文件加载资源数据
+        async function fetchResourcesData() {
+            try {
+                const response = await fetch('assets/resources.json');
+                if (!response.ok) {
+                    throw new Error('加载资源配置文件失败');
+                }
+                const data = await response.json();
+                // 支持新旧两种格式
+                if (data.config && data.resources) {
+                    configData = data.config;
+                    resourcesData = data.resources;
+                } else {
+                    // 兼容旧格式（直接是resources数组）
+                    resourcesData = data;
+                    // 设置默认配置
+                    configData = {
+                        sections: [
+                            {"id": "algorithm", "name": "算法学习", "icon": "🧮"},
+                            {"id": "office", "name": "办公工具", "icon": "💼"},
+                            {"id": "programming", "name": "编程开发", "icon": "💻"},
+                            {"id": "design", "name": "设计创意", "icon": "🎨"},
+                            {"id": "language", "name": "语言学习", "icon": "🌐"}
+                        ],
+                        types: [
+                            {"id": "documents", "name": "文档", "icon": "📄"},
+                            {"id": "images", "name": "图片", "icon": "🖼️"},
+                            {"id": "others", "name": "其他", "icon": "📦"}
+                        ]
+                    };
+                }
+                
+                // 验证文件是否存在
+                const validResources = [];
+                for (const resource of resourcesData) {
+                    if (resource.file) {
+                        try {
+                            // 尝试访问文件，检查是否存在
+                            const fileResponse = await fetch(resource.file, { method: 'HEAD' });
+                            if (fileResponse.ok) {
+                                validResources.push(resource);
+                            } else {
+                                console.warn(`文件不存在: ${resource.file}`);
+                            }
+                        } catch (error) {
+                            console.warn(`文件访问错误: ${resource.file} - ${error.message}`);
+                        }
+                    } else {
+                        console.warn(`资源缺少文件路径: ${resource.name}`);
+                    }
+                }
+                
+                // 更新为仅包含有效资源
+                resourcesData = validResources;
+                return true;
+            } catch (error) {
+                console.error('加载资源配置文件时出错:', error);
+                return false;
+            }
+        }
+        
+        // 动态生成筛选器
+        function generateFilters() {
+            // 生成学习栏目筛选器
+            const sectionFilterTags = document.querySelector('.filter-group:nth-child(1) .filter-tags');
+            if (sectionFilterTags) {
+                // 清空现有的标签
+                sectionFilterTags.innerHTML = '';
+                
+                // 添加全部选项
+                const allSectionTag = document.createElement('span');
+                allSectionTag.className = 'category-tag active';
+                allSectionTag.onclick = function(event) { filterBySection(event, 'all'); };
+                allSectionTag.textContent = '全部栏目';
+                sectionFilterTags.appendChild(allSectionTag);
+                
+                // 添加配置中的栏目选项
+                if (configData.sections && configData.sections.length > 0) {
+                    configData.sections.forEach(section => {
+                        const tag = document.createElement('span');
+                        tag.className = 'category-tag';
+                        tag.onclick = function(event) { filterBySection(event, section.id); };
+                        tag.textContent = section.name;
+                        if (section.icon) {
+                            tag.innerHTML = `${section.icon} ${section.name}`;
+                        }
+                        sectionFilterTags.appendChild(tag);
+                    });
+                }
+            }
+            
+            // 生成资料类型筛选器
+            const typeFilterTags = document.querySelector('.filter-group:nth-child(2) .filter-tags');
+            if (typeFilterTags) {
+                // 清空现有的标签
+                typeFilterTags.innerHTML = '';
+                
+                // 添加全部选项
+                const allTypeTag = document.createElement('span');
+                allTypeTag.className = 'tag active';
+                allTypeTag.onclick = function(event) { filterResources(event, 'all'); };
+                allTypeTag.textContent = '全部';
+                typeFilterTags.appendChild(allTypeTag);
+                
+                // 添加配置中的类型选项
+                if (configData.types && configData.types.length > 0) {
+                    configData.types.forEach(type => {
+                        const tag = document.createElement('span');
+                        tag.className = 'tag';
+                        tag.onclick = function(event) { filterResources(event, type.id); };
+                        tag.textContent = type.name;
+                        if (type.icon) {
+                            tag.innerHTML = `${type.icon} ${type.name}`;
+                        }
+                        typeFilterTags.appendChild(tag);
+                    });
+                }
+            }
+        }
+
+        // 加载资料列表
+        async function loadResources() {
+            const resourcesList = document.getElementById('resources-list');
+            
+            // 显示加载状态
+            resourcesList.innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <span>正在加载资料列表...</span>
+                </div>
+            `;
+            
+            // 尝试加载JSON数据
+            const loadSuccess = await fetchResourcesData();
+            
+            // 生成筛选器
+            if (loadSuccess) {
+                generateFilters();
+            }
+            
+            // 清空列表
+            resourcesList.innerHTML = '';
+            
+            // 如果加载失败或没有资料，显示提示
+            if (!loadSuccess || resourcesData.length === 0) {
+                resourcesList.innerHTML = `
+                    <div style="text-align: center; padding: 40px;">
+                        <i class="fas fa-folder-open" style="font-size: 48px; color: #95a5a6; margin-bottom: 20px;"></i>
+                        <h3>暂无资料</h3>
+                        <p>${loadSuccess ? '您尚未添加任何实际资料文件' : '加载资源配置文件失败'}</p>
+                        <p style="margin-top: 15px; color: #7f8c8d; max-width: 500px; margin-left: auto; margin-right: auto;">
+                            请按照以下步骤添加资料：<br>
+                            1. 将文件添加到docs（文档）或images（图片）文件夹中<br>
+                            2. 编辑resources.json文件<br>
+                            3. 在JSON数组中添加文件信息<br>
+                            4. 保存并刷新页面
+                        </p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // 创建资料项
+            resourcesData.forEach(resource => {
+                // 确定资源类型（优先使用resource.type，否则根据路径推断）
+                let resourceType = resource.type || 'other';
+                if (!resource.type) {
+                    if (resource.file) {
+                        if (resource.file.startsWith('documents/') || 
+                            resource.file.startsWith('code/') || 
+                            resource.file.startsWith('books/') || 
+                            resource.file.startsWith('notes/')) {
+                            resourceType = 'documents';
+                        } else if (resource.file.startsWith('images/')) {
+                            resourceType = 'images';
+                        } else if (resource.file.startsWith('archives/')) {
+                            resourceType = 'other';
+                        }
+                    }
+                }
+                
+                const resourceItem = document.createElement('div');
+                resourceItem.className = `resource-item searchable resource-${resourceType}`;
+                
+                // 为每个标签添加数据属性，用于搜索
+                if (resource.tags && resource.tags.length > 0) {
+                    resourceItem.setAttribute('data-tags', resource.tags.join(' ').toLowerCase());
+                }
+                // 添加栏目属性（无论是否有标签都要添加）
+                if (resource.section) {
+                    resourceItem.setAttribute('data-section', resource.section);
+                }
+                
+                // 获取文件类型和图标
+                let fileExtension = 'default';
+                if (resource.file) {
+                    const extensionMatch = resource.file.match(/\.([^.]+)$/);
+                    if (extensionMatch) {
+                        fileExtension = extensionMatch[1].toLowerCase();
+                    }
+                }
+                const fileIcon = getFileIcon(fileExtension);
+                
+                // 格式化日期显示
+                const displayDate = resource.date ? resource.date : new Date().toISOString().split('T')[0];
+                
+                // 构建标签HTML
+                let tagsHtml = '';
+                if (resource.tags && resource.tags.length > 0) {
+                    tagsHtml = `<div class="resource-tags" style="margin-top: 5px;">`;
+                    resource.tags.forEach(tag => {
+                        tagsHtml += `<span class="small-tag" style="background-color: #f1f1f1; padding: 2px 8px; border-radius: 12px; font-size: 0.7rem; margin-right: 5px;">${tag}</span>`;
+                    });
+                    tagsHtml += `</div>`;
+                }
+                
+                // 构建栏目HTML
+                let sectionHtml = '';
+                if (resource.section) {
+                    // 查找栏目的名称和图标
+                    let sectionName = resource.section;
+                    let sectionIcon = '<i class="fas fa-layer-group"></i>';
+                    if (configData.sections) {
+                        const section = configData.sections.find(s => s.id === resource.section);
+                        if (section) {
+                            sectionName = section.name;
+                            sectionIcon = section.icon || sectionIcon;
+                        }
+                    }
+                    sectionHtml = `<div style="font-size: 0.75rem; color: #495057; margin-top: 3px; font-weight: 500;">`;
+                    sectionHtml += `${sectionIcon} 栏目：${sectionName}`;
+                    sectionHtml += `</div>`;
+                }
+                
+                // 构建分类HTML
+                let categoriesHtml = '';
+                if (resource.categories && resource.categories.length > 0) {
+                    categoriesHtml = `<div style="font-size: 0.7rem; color: #6c757d; margin-top: 3px;">`;
+                    categoriesHtml += `<i class="fas fa-folder"></i> ${resource.categories.join(' / ')}`;
+                    categoriesHtml += `</div>`;
+                }
+                
+                // 构建缩略图HTML
+                let thumbnailHtml = '';
+                if (resource.thumbnail && resourceType === 'images') {
+                    thumbnailHtml = `
+                        <div class="resource-thumbnail" style="margin: 10px 0; max-width: 200px; max-height: 150px; overflow: hidden; border-radius: 4px;">
+                            <img src="${resource.thumbnail}" alt="${resource.name}" style="width: 100%; height: auto; object-fit: cover;">
+                        </div>
+                    `;
+                }
+                
+                // 构建作者和格式信息HTML
+                let metaInfoHtml = '';
+                if (resource.author || resource.format) {
+                    metaInfoHtml = `<div style="font-size: 0.7rem; color: #6c757d; margin-top: 3px;">`;
+                    if (resource.author) {
+                        metaInfoHtml += `<i class="fas fa-user"></i> ${resource.author} `;
+                    }
+                    if (resource.format) {
+                        metaInfoHtml += `<i class="fas fa-file-code"></i> ${resource.format}`;
+                    }
+                    metaInfoHtml += `</div>`;
+                }
+                
+                // 构建图片尺寸信息HTML
+                let dimensionsHtml = '';
+                if (resource.dimensions && resourceType === 'images') {
+                    dimensionsHtml = `<span style="margin: 0 10px;">|</span><span><i class="fas fa-ruler-combined"></i> ${resource.dimensions}</span>`;
+                }
+                
+                // 创建资源项结构
+                resourceItem.innerHTML = `
+                    <div class="resource-icon">
+                        ${fileIcon}
+                    </div>
+                    <div class="resource-info">
+                        <h3>${resource.name}</h3>
+                        <p>${resource.description || '暂无描述'}</p>
+                        
+                        ${thumbnailHtml}
+                        
+                        <div style="font-size: 0.8rem; color: #95a5a6; margin-top: 5px;">
+                            <span><i class="fas fa-calendar-alt"></i> ${displayDate}</span>
+                            ${resource.size ? `<span style="margin: 0 10px;">|</span><span><i class="fas fa-file-size"></i> ${resource.size}</span>` : ''}
+                            ${dimensionsHtml}
+                        </div>
+                        
+                        ${metaInfoHtml}
+                        ${sectionHtml}
+                        ${categoriesHtml}
+                        ${tagsHtml}
+                    </div>
+                    <div class="resource-actions">
+                        <a href="javascript:void(0)" class="preview-btn">
+                            <i class="fas fa-eye"></i> 预览
+                        </a>
+                        <a href="${resource.file}" download="${resource.name}" target="_blank" class="download-btn">
+                            <i class="fas fa-download"></i> 下载
+                        </a>
+                    </div>
+                `;
+                
+                // 添加到DOM
+                resourcesList.appendChild(resourceItem);
+                
+                // 强制重新计算样式，确保布局正确应用
+                // 直接设置资源项的flex布局属性，确保子元素顶部对齐
+                resourceItem.style.display = 'flex';
+                resourceItem.style.alignItems = 'flex-start';
+                
+                // 直接设置按钮区域的样式，确保与标题对齐
+                const actions = resourceItem.querySelector('.resource-actions');
+                if (actions) {
+                    actions.style.alignSelf = 'flex-start';
+                    actions.style.marginTop = '0';
+                    actions.style.paddingTop = '0';
+                }
+                
+                // 使用setTimeout确保样式应用完成
+                setTimeout(() => {
+                    if (resourceItem.parentNode) {
+                        // 触发重排以确保样式正确应用
+                        resourceItem.offsetHeight; // 触发重排
+                    }
+                }, 0);
+                
+                // 添加下载计数逻辑（客户端简单计数）
+                const downloadBtn = resourceItem.querySelector('.download-btn');
+                if (downloadBtn) {
+                    downloadBtn.addEventListener('click', function() {
+                        // 这里可以添加下载计数逻辑，例如发送请求到服务器
+                        console.log(`资源 ${resource.name} 被下载`);
+                    });
+                }
+                
+                // 添加预览按钮事件处理
+                const previewBtn = resourceItem.querySelector('.preview-btn');
+                if (previewBtn) {
+                    previewBtn.addEventListener('click', function() {
+                        // 预览功能逻辑可以在这里实现
+                        console.log(`预览资源 ${resource.name}`);
+                    });
+                }
+            });
+            
+            // 内容加载完成后重新初始化搜索功能
+            if (typeof reinitSearch === 'function') {
+                reinitSearch();
+            }
+        }
+
+        // 根据栏目筛选资料
+        function filterBySection(event, section) {
+            try {
+                // 获取当前的筛选状态
+                const typeTags = document.querySelectorAll('.filters-container .tag');
+                let currentTypeFilter = 'all';
+                
+                // 遍历类型标签找到当前激活的
+                for (let tag of typeTags) {
+                    if (tag.classList.contains('active')) {
+                        const onclickAttr = tag.getAttribute('onclick');
+                        if (onclickAttr) {
+                            const match = onclickAttr.match(/'([^']+)'/);
+                            if (match && match[1]) {
+                                currentTypeFilter = match[1];
+                            }
+                        }
+                        break;
+                    }
+                }
+                
+                const items = document.querySelectorAll('.resource-item');
+                const sectionTags = document.querySelectorAll('.category-tag');
+                
+                // 直接通过点击的按钮元素来更新样式（使用事件对象）
+                // 如果是通过事件调用的，使用事件目标
+                if (event && event.target && event.target.classList.contains('category-tag')) {
+                    sectionTags.forEach(tag => tag.classList.remove('active'));
+                    event.target.classList.add('active');
+                } else {
+                    // 回退方案：使用section参数查找匹配的标签
+                    sectionTags.forEach(tag => {
+                        tag.classList.remove('active');
+                        // 检查onclick属性或使用更可靠的方式
+                        const onclickAttr = tag.getAttribute('onclick');
+                        if (onclickAttr && onclickAttr.includes(`filterBySection(event, '${section}')`)) {
+                            tag.classList.add('active');
+                        }
+                    });
+                }
+                
+                // 检查是否有资源项，无资源项时直接返回
+                if (items.length === 0) {
+                    return;
+                }
+                
+                // 获取当前日期筛选状态
+                let currentDateFilter = 'all';
+                const dateTags = document.querySelectorAll('.secondary-tag[onclick^="filterByDate"]');
+                for (let tag of dateTags) {
+                    if (tag.classList.contains('active')) {
+                        const onclickAttr = tag.getAttribute('onclick');
+                        if (onclickAttr) {
+                            const match = onclickAttr.match(/'([^']+)'/);
+                            if (match && match[1]) {
+                                currentDateFilter = match[1];
+                            }
+                        }
+                        break;
+                    }
+                }
+                
+                // 获取当前大小筛选状态
+                let currentSizeFilter = 'all';
+                const sizeTags = document.querySelectorAll('.secondary-tag[onclick^="filterBySize"]');
+                for (let tag of sizeTags) {
+                    if (tag.classList.contains('active')) {
+                        const onclickAttr = tag.getAttribute('onclick');
+                        if (onclickAttr) {
+                            const match = onclickAttr.match(/'([^']+)'/);
+                            if (match && match[1]) {
+                                currentSizeFilter = match[1];
+                            }
+                        }
+                        break;
+                    }
+                }
+                
+                // 筛选资料 - 结合类型、栏目、日期和大小筛选
+                items.forEach(item => {
+                    const typeMatch = currentTypeFilter === 'all' || item.classList.contains(`resource-${currentTypeFilter}`);
+                    const sectionMatch = section === 'all' || item.getAttribute('data-section') === section;
+                    const dateMatch = filterDate(item, currentDateFilter);
+                    const sizeMatch = filterSize(item, currentSizeFilter);
+                    
+                    if (typeMatch && sectionMatch && dateMatch && sizeMatch) {
+                        item.style.display = 'flex';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            } catch (error) {
+                console.error('栏目筛选出错:', error);
+            }
+        }
+        
+        // 根据类型筛选资料
+        function filterResources(event, type) {
+            try {
+                // 获取当前的筛选状态
+                let currentDateFilter = 'all';
+                let currentSizeFilter = 'all';
+                
+                // 获取日期筛选状态
+                const dateTags = document.querySelectorAll('.secondary-tag[onclick^="filterByDate"]');
+                for (let tag of dateTags) {
+                    if (tag.classList.contains('active')) {
+                        const onclickAttr = tag.getAttribute('onclick');
+                        if (onclickAttr) {
+                            const match = onclickAttr.match(/'([^']+)'/);
+                            if (match && match[1]) {
+                                currentDateFilter = match[1];
+                            }
+                        }
+                        break;
+                    }
+                }
+                
+                // 获取大小筛选状态
+                const sizeTags = document.querySelectorAll('.secondary-tag[onclick^="filterBySize"]');
+                for (let tag of sizeTags) {
+                    if (tag.classList.contains('active')) {
+                        const onclickAttr = tag.getAttribute('onclick');
+                        if (onclickAttr) {
+                            const match = onclickAttr.match(/'([^']+)'/);
+                            if (match && match[1]) {
+                                currentSizeFilter = match[1];
+                            }
+                        }
+                        break;
+                    }
+                }
+                
+                const items = document.querySelectorAll('.resource-item');
+                const tags = document.querySelectorAll('.tag');
+                
+                // 首先移除所有类型标签的active类，确保只有一个按钮保持选中状态
+                tags.forEach(tag => {
+                    tag.classList.remove('active');
+                });
+                
+                if (event && event.target && event.target.classList.contains('tag')) {
+                    // 为点击的元素添加active类
+                    event.target.classList.add('active');
+                } else {
+                    // 回退方案：使用type参数查找匹配的标签
+                    tags.forEach(tag => {
+                        const onclickAttr = tag.getAttribute('onclick');
+                        if (onclickAttr && onclickAttr.includes(`filterResources(event, '${type}')`)) {
+                            tag.classList.add('active');
+                        }
+                    });
+                }
+                
+                // 检查是否有资源项，无资源项时直接返回
+                if (items.length === 0) {
+                    return;
+                }
+                
+                // 获取当前栏目筛选状态
+                let currentSectionFilter = 'all';
+                const sectionTags = document.querySelectorAll('.category-tag');
+                for (let tag of sectionTags) {
+                    if (tag.classList.contains('active')) {
+                        const onclickAttr = tag.getAttribute('onclick');
+                        if (onclickAttr) {
+                            const match = onclickAttr.match(/'([^']+)'/);
+                            if (match && match[1]) {
+                                currentSectionFilter = match[1];
+                            }
+                        }
+                        break;
+                    }
+                }
+                
+                // 筛选资料 - 结合类型、栏目、日期和大小筛选
+                items.forEach(item => {
+                    const typeMatch = type === 'all' || item.classList.contains(`resource-${type}`);
+                    const sectionMatch = currentSectionFilter === 'all' || item.getAttribute('data-section') === currentSectionFilter;
+                    const dateMatch = filterDate(item, currentDateFilter);
+                    const sizeMatch = filterSize(item, currentSizeFilter);
+                    
+                    // 只有当所有筛选条件都满足时才显示项目
+                    if (typeMatch && sectionMatch && dateMatch && sizeMatch) {
+                        item.style.display = 'flex';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            } catch (error) {
+                console.error('类型筛选出错:', error);
+            }
+        }
+        
+        // 根据日期筛选资料
+        function filterByDate(period) {
+            try {
+                // 获取当前的筛选状态
+                const typeTags = document.querySelectorAll('.filters-container .tag');
+                let currentTypeFilter = 'all';
+                
+                // 遍历类型标签找到当前激活的
+                for (let tag of typeTags) {
+                    if (tag.classList.contains('active')) {
+                        const onclickAttr = tag.getAttribute('onclick');
+                        if (onclickAttr) {
+                            const match = onclickAttr.match(/'([^']+)'/);
+                            if (match && match[1]) {
+                                currentTypeFilter = match[1];
+                            }
+                        }
+                        break;
+                    }
+                }
+                
+                const items = document.querySelectorAll('.resource-item');
+                const dateTags = document.querySelectorAll('.secondary-tag[onclick^="filterByDate"]');
+                
+                // 更新日期标签样式
+                dateTags.forEach(tag => {
+                    tag.classList.remove('active');
+                    // 直接通过onclick属性来确定要激活的标签
+                    if (tag.getAttribute('onclick') === `filterByDate('${period}')`) {
+                        tag.classList.add('active');
+                    }
+                });
+                
+                // 检查是否有资源项，无资源项时直接返回
+                if (items.length === 0) {
+                    return;
+                }
+                
+                // 获取当前大小筛选状态
+                let currentSizeFilter = 'all';
+                const sizeTags = document.querySelectorAll('.secondary-tag[onclick^="filterBySize"]');
+                for (let tag of sizeTags) {
+                    if (tag.classList.contains('active')) {
+                        const onclickAttr = tag.getAttribute('onclick');
+                        if (onclickAttr) {
+                            const match = onclickAttr.match(/'([^']+)'/);
+                            if (match && match[1]) {
+                                currentSizeFilter = match[1];
+                            }
+                        }
+                        break;
+                    }
+                }
+                
+                // 获取当前栏目筛选状态
+                let currentSectionFilter = 'all';
+                const sectionTags = document.querySelectorAll('.category-tag');
+                for (let tag of sectionTags) {
+                    if (tag.classList.contains('active')) {
+                        const onclickAttr = tag.getAttribute('onclick');
+                        if (onclickAttr) {
+                            const match = onclickAttr.match(/'([^']+)'/);
+                            if (match && match[1]) {
+                                currentSectionFilter = match[1];
+                            }
+                        }
+                        break;
+                    }
+                }
+                
+                // 筛选资料 - 结合类型、栏目、日期和大小筛选
+                items.forEach(item => {
+                    const typeMatch = currentTypeFilter === 'all' || item.classList.contains(`resource-${currentTypeFilter}`);
+                    const sectionMatch = currentSectionFilter === 'all' || item.getAttribute('data-section') === currentSectionFilter;
+                    const dateMatch = filterDate(item, period);
+                    const sizeMatch = filterSize(item, currentSizeFilter);
+                    
+                    if (typeMatch && sectionMatch && dateMatch && sizeMatch) {
+                        item.style.display = 'flex';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            } catch (error) {
+                console.error('日期筛选出错:', error);
+            }
+        }
+        
+        // 根据文件大小筛选资料
+        function filterBySize(sizeRange) {
+            try {
+                // 获取当前的筛选状态
+                const typeTags = document.querySelectorAll('.filters-container .tag');
+                let currentTypeFilter = 'all';
+                
+                // 遍历类型标签找到当前激活的
+                for (let tag of typeTags) {
+                    if (tag.classList.contains('active')) {
+                        const onclickAttr = tag.getAttribute('onclick');
+                        if (onclickAttr) {
+                            const match = onclickAttr.match(/'([^']+)'/);
+                            if (match && match[1]) {
+                                currentTypeFilter = match[1];
+                            }
+                        }
+                        break;
+                    }
+                }
+                
+                const items = document.querySelectorAll('.resource-item');
+                const sizeTags = document.querySelectorAll('.secondary-tag[onclick^="filterBySize"]');
+                
+                // 更新大小标签样式
+                sizeTags.forEach(tag => {
+                    tag.classList.remove('active');
+                    // 直接通过onclick属性来确定要激活的标签
+                    if (tag.getAttribute('onclick') === `filterBySize('${sizeRange}')`) {
+                        tag.classList.add('active');
+                    }
+                });
+                
+                // 检查是否有资源项，无资源项时直接返回
+                if (items.length === 0) {
+                    return;
+                }
+                
+                // 获取当前日期筛选状态
+                let currentDateFilter = 'all';
+                const dateTags = document.querySelectorAll('.secondary-tag[onclick^="filterByDate"]');
+                for (let tag of dateTags) {
+                    if (tag.classList.contains('active')) {
+                        const onclickAttr = tag.getAttribute('onclick');
+                        if (onclickAttr) {
+                            const match = onclickAttr.match(/'([^']+)'/);
+                            if (match && match[1]) {
+                                currentDateFilter = match[1];
+                            }
+                        }
+                        break;
+                    }
+                }
+                
+                // 获取当前栏目筛选状态
+                let currentSectionFilter = 'all';
+                const sectionTags = document.querySelectorAll('.category-tag');
+                for (let tag of sectionTags) {
+                    if (tag.classList.contains('active')) {
+                        const onclickAttr = tag.getAttribute('onclick');
+                        if (onclickAttr) {
+                            const match = onclickAttr.match(/'([^']+)'/);
+                            if (match && match[1]) {
+                                currentSectionFilter = match[1];
+                            }
+                        }
+                        break;
+                    }
+                }
+                
+                // 筛选资料 - 结合类型、栏目、日期和大小筛选
+                items.forEach(item => {
+                    const typeMatch = currentTypeFilter === 'all' || item.classList.contains(`resource-${currentTypeFilter}`);
+                    const sectionMatch = currentSectionFilter === 'all' || item.getAttribute('data-section') === currentSectionFilter;
+                    const dateMatch = filterDate(item, currentDateFilter);
+                    const sizeMatch = filterSize(item, sizeRange);
+                    
+                    if (typeMatch && sectionMatch && dateMatch && sizeMatch) {
+                        item.style.display = 'flex';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            } catch (error) {
+                console.error('大小筛选出错:', error);
+            }
+        }
+        
+        // 日期筛选辅助函数
+        function filterDate(item, period) {
+            if (period === 'all') return true;
+            
+            // 获取资源的日期信息，增加错误处理
+            try {
+                // 先找到日历图标元素
+                const calendarIcon = item.querySelector('.resource-info div i.fas.fa-calendar-alt');
+                if (!calendarIcon || !calendarIcon.parentNode) {
+                    return true; // 如果没有日期信息，则默认显示
+                }
+                
+                // 获取日历图标的父元素（span）
+                const dateSpan = calendarIcon.parentNode;
+                
+                // 获取span元素的完整文本内容
+                let dateText = dateSpan.textContent.trim();
+                
+                // 移除日历图标相关的文本（通常是图标后面跟一个空格）
+                // 图标会被渲染为一个特殊字符，所以我们需要提取实际的日期文本
+                // 方法是找到图标后面的文本
+                let dateInfo = '';
+                for (let i = 0; i < dateSpan.childNodes.length; i++) {
+                    const node = dateSpan.childNodes[i];
+                    if (node.nodeType === Node.TEXT_NODE && node.textContent.trim()) {
+                        dateInfo = node.textContent.trim();
+                        break;
+                    }
+                }
+                
+                if (!dateInfo) {
+                    // 如果没有找到文本节点，尝试使用正则表达式提取
+                    dateInfo = dateText.replace(/^[^\d]+/, '').trim();
+                }
+                
+                if (!dateInfo) return true;
+                
+                // 将中文日期格式转换为标准格式
+                const normalizedDate = dateInfo.replace(/年|月/g, '-').replace(/日/g, '');
+                const resourceDate = new Date(normalizedDate);
+                // 检查日期是否有效
+                if (isNaN(resourceDate.getTime())) {
+                    return true;
+                }
+                
+                const today = new Date();
+                const now = new Date();
+                
+                // 设置时间为00:00:00，以便比较日期
+                resourceDate.setHours(0, 0, 0, 0);
+                today.setHours(0, 0, 0, 0);
+                
+                switch(period) {
+                    case 'today':
+                        return resourceDate.getTime() === today.getTime();
+                    case 'week':
+                        // 获取本周的起始日期（周一）
+                        const startOfWeek = new Date(today);
+                        const dayOfWeek = today.getDay() || 7; // 将星期日(0)转换为7
+                        startOfWeek.setDate(today.getDate() - dayOfWeek + 1);
+                        return resourceDate >= startOfWeek && resourceDate <= now;
+                    case 'month':
+                        // 获取本月的起始日期
+                        const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+                        return resourceDate >= startOfMonth && resourceDate <= now;
+                    case 'year':
+                        // 获取本年的起始日期
+                        const startOfYear = new Date(today.getFullYear(), 0, 1);
+                        return resourceDate >= startOfYear && resourceDate <= now;
+                    default:
+                        return true;
+                }
+            } catch (error) {
+                console.error('日期筛选时出错:', error);
+                return true; // 出错时默认显示
+            }
+        }
+        
+        // 文件大小筛选辅助函数
+        function filterSize(item, sizeRange) {
+            if (sizeRange === 'all') return true;
+            
+            // 获取资源的大小信息，增加错误处理
+            try {
+                // 获取大小信息，增加更灵活的选择器
+                const sizeElement = item.querySelector('.resource-info div i.fas.fa-file-size') || 
+                                   item.querySelector('.resource-info div span:nth-of-type(3)');
+                if (!sizeElement || !sizeElement.nextSibling) {
+                    return true; // 如果没有大小信息，则默认显示
+                }
+                
+                const sizeText = sizeElement.nextSibling.textContent.trim();
+                if (!sizeText) return true;
+                
+                // 解析文件大小
+                let sizeBytes = 0;
+                const sizeMatch = sizeText.match(/([\d.]+)\s*(KB|MB|GB)/i);
+                
+                if (sizeMatch) {
+                    const sizeValue = parseFloat(sizeMatch[1]);
+                    const unit = sizeMatch[2].toUpperCase();
+                    
+                    // 转换为字节
+                    switch(unit) {
+                        case 'KB':
+                            sizeBytes = sizeValue * 1024;
+                            break;
+                        case 'MB':
+                            sizeBytes = sizeValue * 1024 * 1024;
+                            break;
+                        case 'GB':
+                            sizeBytes = sizeValue * 1024 * 1024 * 1024;
+                            break;
+                        default:
+                            return true; // 未知单位，默认显示
+                    }
+                }
+                
+                // 根据范围筛选
+                switch(sizeRange) {
+                    case 'small':
+                        return sizeBytes < 1024 * 1024; // 小于1MB
+                    case 'medium':
+                        return sizeBytes >= 1024 * 1024 && sizeBytes < 10 * 1024 * 1024; // 1MB-10MB
+                    case 'large':
+                        return sizeBytes >= 10 * 1024 * 1024 && sizeBytes < 100 * 1024 * 1024; // 10MB-100MB
+                    case 'xlarge':
+                        return sizeBytes >= 100 * 1024 * 1024; // 大于100MB
+                    default:
+                        return true;
+                }
+            } catch (error) {
+                console.error('文件大小筛选时出错:', error);
+                return true; // 出错时默认显示
+            }
+        }
+        
+        // 获取周期名称
+        function getPeriodName(period) {
+            const periodMap = {
+                'today': '今天',
+                'week': '本周',
+                'month': '本月',
+                'year': '今年',
+                'all': '全部'
+            };
+            return periodMap[period] || '全部';
+        }
+        
+        // 获取大小范围名称
+        function getSizeRangeName(sizeRange) {
+            const sizeRangeMap = {
+                'small': '<1MB',
+                'medium': '1-10MB',
+                'large': '10-100MB',
+                'xlarge': '>100MB',
+                'all': '全部'
+            };
+            return sizeRangeMap[sizeRange] || '全部';
+        }
+        
+        // 搜索功能已在main.js中统一实现并增强
+
+        // 获取类型名称
+        function getTypeName(type) {
+            // 先从配置中查找
+            if (configData.types) {
+                const typeConfig = configData.types.find(t => t.id === type);
+                if (typeConfig) {
+                    return typeConfig.name;
+                }
+            }
+            
+            // 默认映射
+            const typeMap = {
+                'documents': '文档',
+                'images': '图片',
+                'videos': '视频',
+                'audios': '音频',
+                'others': '其他',
+                'other': '其他'
+            };
+            return typeMap[type] || type;
+        }
+
+        // 文件类型图标映射
+        function getFileIcon(fileType) {
+            const iconMap = {
+                'pdf': '📄',
+                'doc': '📝',
+                'docx': '📝',
+                'xls': '📊',
+                'xlsx': '📊',
+                'ppt': '📑',
+                'pptx': '📑',
+                'zip': '🗜️',
+                'rar': '🗜️',
+                'jpg': '🖼️',
+                'jpeg': '🖼️',
+                'png': '🖼️',
+                'gif': '🖼️',
+                'svg': '🖼️',
+                'md': '📄',
+                'txt': '📄',
+                'default': '📎'
+            };
+            
+            return iconMap[fileType] || iconMap['default'];
+        }
+
+        // 预览模态框相关变量
+        let currentResource = null;
+        let pdfDoc = null;
+        let currentPage = 1;
+        const pdfScale = 1.5;
+        
+        // 打开预览模态框
+        function openPreviewModal(resource) {
+            currentResource = resource;
+            const modal = document.getElementById('previewModal');
+            const previewTitle = document.getElementById('previewTitle');
+            const downloadBtn = document.getElementById('downloadBtn');
+            
+            // 隐藏所有预览容器
+            document.getElementById('imagePreview').style.display = 'none';
+            document.getElementById('pdfPreview').style.display = 'none';
+            document.getElementById('textPreview').style.display = 'none';
+            document.getElementById('unsupportedPreview').style.display = 'none';
+            document.getElementById('previewLoading').style.display = 'block';
+            
+            // 设置模态框标题和下载链接
+            previewTitle.textContent = resource.name;
+            downloadBtn.setAttribute('onclick', `window.open('${resource.file}', '_blank')`);
+            
+            // 根据文件类型显示相应的预览
+            const fileExtension = resource.file.split('.').pop().toLowerCase();
+            
+            if (['jpg', 'jpeg', 'png', 'gif', 'svg'].includes(fileExtension)) {
+                previewImageFile(resource.file);
+            } else if (fileExtension === 'pdf') {
+                previewPdfFile(resource.file);
+            } else if (['txt', 'md', 'html', 'css', 'js', 'json'].includes(fileExtension)) {
+                previewTextFile(resource.file);
+            } else {
+                // 不支持的文件类型
+                document.getElementById('previewLoading').style.display = 'none';
+                document.getElementById('unsupportedPreview').style.display = 'block';
+            }
+            
+            // 显示模态框
+            modal.style.display = 'block';
+        }
+        
+        // 关闭预览模态框
+        function closePreviewModal() {
+            const modal = document.getElementById('previewModal');
+            modal.style.display = 'none';
+            pdfDoc = null;
+            currentPage = 1;
+        }
+        
+        // 预览图片文件
+        function previewImageFile(fileUrl) {
+            const previewLoading = document.getElementById('previewLoading');
+            const imagePreview = document.getElementById('imagePreview');
+            const previewImage = document.getElementById('previewImage');
+            
+            // 设置图片源
+            previewImage.src = fileUrl;
+            
+            // 图片加载完成后显示
+            previewImage.onload = function() {
+                previewLoading.style.display = 'none';
+                imagePreview.style.display = 'block';
+            };
+            
+            // 图片加载失败
+            previewImage.onerror = function() {
+                previewLoading.style.display = 'none';
+                document.getElementById('unsupportedPreview').style.display = 'block';
+            };
+        }
+        
+        // 预览PDF文件
+        function previewPdfFile(fileUrl) {
+            const previewLoading = document.getElementById('previewLoading');
+            const pdfPreview = document.getElementById('pdfPreview');
+            
+            // 重置预览状态
+            previewLoading.style.display = 'block';
+            pdfPreview.style.display = 'none';
+            document.getElementById('unsupportedPreview').style.display = 'none';
+            
+            // 检查文件URL是否有效
+            if (!fileUrl || typeof fileUrl !== 'string' || fileUrl.trim() === '') {
+                previewLoading.style.display = 'none';
+                document.getElementById('unsupportedPreview').style.display = 'block';
+                return;
+            }
+            
+            // 使用PDF.js加载PDF
+            try {
+                pdfjsLib.getDocument(fileUrl).promise.then(function(pdf) {
+                    pdfDoc = pdf;
+                    document.getElementById('pageNum').textContent = `第 ${currentPage} / ${pdf.numPages} 页`;
+                    renderPdfPage(currentPage);
+                    
+                    previewLoading.style.display = 'none';
+                    pdfPreview.style.display = 'block';
+                }).catch(function() {
+                    // 不显示具体错误信息，直接显示不支持预览
+                    previewLoading.style.display = 'none';
+                    document.getElementById('unsupportedPreview').style.display = 'block';
+                });
+            } catch (e) {
+                // 捕获任何异常
+                previewLoading.style.display = 'none';
+                document.getElementById('unsupportedPreview').style.display = 'block';
+            }
+        }
+        
+        // 渲染PDF页面
+        function renderPdfPage(pageNum) {
+            if (!pdfDoc) return;
+            
+            pdfDoc.getPage(pageNum).then(function(page) {
+                const canvas = document.getElementById('pdfCanvas');
+                const ctx = canvas.getContext('2d');
+                const viewport = page.getViewport({scale: pdfScale});
+                
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+                
+                const renderContext = {
+                    canvasContext: ctx,
+                    viewport: viewport
+                };
+                
+                page.render(renderContext);
+            });
+        }
+        
+        // 上一页
+        function prevPdfPage() {
+            if (!pdfDoc || currentPage <= 1) return;
+            currentPage--;
+            document.getElementById('pageNum').textContent = `第 ${currentPage} / ${pdfDoc.numPages} 页`;
+            renderPdfPage(currentPage);
+        }
+        
+        // 下一页
+        function nextPdfPage() {
+            if (!pdfDoc || currentPage >= pdfDoc.numPages) return;
+            currentPage++;
+            document.getElementById('pageNum').textContent = `第 ${currentPage} / ${pdfDoc.numPages} 页`;
+            renderPdfPage(currentPage);
+        }
+        
+        // 预览文本文件
+        function previewTextFile(fileUrl) {
+            const previewLoading = document.getElementById('previewLoading');
+            const textPreview = document.getElementById('textPreview');
+            const previewText = document.getElementById('previewText');
+            
+            fetch(fileUrl)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('加载文件失败');
+                    }
+                    return response.text();
+                })
+                .then(text => {
+                    previewText.textContent = text;
+                    previewLoading.style.display = 'none';
+                    textPreview.style.display = 'block';
+                })
+                .catch(error => {
+                    console.error('加载文本文件失败:', error);
+                    previewLoading.style.display = 'none';
+                    document.getElementById('unsupportedPreview').style.display = 'block';
+                });
+        }
+        
+        // 下载当前文件
+        function downloadCurrentFile() {
+            if (currentResource) {
+                const a = document.createElement('a');
+                a.href = currentResource.file;
+                a.download = currentResource.name;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            }
+        }
+        
+        // 修改资源项点击事件以支持预览
+        function modifyResourceItemsForPreview() {
+            // 在loadResources函数中添加预览支持
+            const originalLoadResources = loadResources;
+            loadResources = async function() {
+                await originalLoadResources();
+                
+                // 为每个资源项添加预览功能
+                const resourceItems = document.querySelectorAll('.resource-item');
+                resourceItems.forEach((item, index) => {
+                    if (resourcesData[index]) {
+                        // 获取资源信息区域和操作区域
+                        const resourceInfo = item.querySelector('.resource-info');
+                        const resourceActions = item.querySelector('.resource-actions');
+                        
+                        // 为资源信息区域添加点击预览事件
+                        resourceInfo.addEventListener('click', function() {
+                            openPreviewModal(resourcesData[index]);
+                        });
+                        
+                        // 为已有的预览按钮添加点击事件
+                        const previewBtn = item.querySelector('.preview-btn');
+                        if (previewBtn) {
+                            previewBtn.addEventListener('click', function(e) {
+                                e.stopPropagation();
+                                openPreviewModal(resourcesData[index]);
+                            });
+                        }
+                        
+                        // 阻止下载按钮的事件冒泡，避免触发预览
+                        const downloadBtn = item.querySelector('.download-btn');
+                        if (downloadBtn) {
+                            downloadBtn.addEventListener('click', function(e) {
+                                e.stopPropagation();
+                            });
+                        }
+                    }
+                });
+            };
+        }
+        
+        // 初始化页面
+        document.addEventListener('DOMContentLoaded', function() {
+            modifyResourceItemsForPreview();
+            loadResources();
+        });
+    </script>
+    
+    <!-- 实时时间显示脚本 -->
+    <script>
+        // 实时更新时间
+        function updateCurrentTime() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            const weekDays = ['日', '一', '二', '三', '四', '五', '六'];
+            const weekDay = weekDays[now.getDay()];
+            
+            const timeString = `${year}年${month}月${day}日 星期${weekDay} ${hours}:${minutes}:${seconds}`;
+            document.getElementById('current-time').textContent = timeString;
+        }
+        
+        // 页面加载时更新一次时间，然后每秒更新一次
+        window.onload = function() {
+            updateCurrentTime();
+            setInterval(updateCurrentTime, 1000);
+        };
+    </script>
+</body>
+</html>
