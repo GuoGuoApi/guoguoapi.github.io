@@ -149,6 +149,16 @@
                     <pre id="previewText"></pre>
                 </div>
                 
+                <!-- 视频预览容器 -->
+                <div id="videoPreview" style="display: none;">
+                    <video id="previewVideo" controls autoplay style="width: 100%; max-height: 600px;"></video>
+                </div>
+                
+                <!-- 音频预览容器 -->
+                <div id="audioPreview" style="display: none;">
+                    <audio id="previewAudio" controls style="width: 100%;"></audio>
+                </div>
+                
                 <!-- 不支持预览提示 -->
                 <div id="unsupportedPreview" style="display: none;">
                     <div class="unsupported-icon">
@@ -198,7 +208,7 @@
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2025 个人网站. All rights reserved.</p>
+                <p>&copy; 2026 个人网站. All rights reserved.</p>
             </div>
         </div>
     </footer>
@@ -381,11 +391,18 @@
             
             // 创建资料项
             resourcesData.forEach(resource => {
-                // 确定资源类型（优先使用resource.type，否则根据路径推断）
+                // 确定资源类型（优先使用resource.type，否则根据路径和文件扩展名推断）
                 let resourceType = resource.type || 'other';
                 if (!resource.type) {
                     if (resource.file) {
-                        if (resource.file.startsWith('documents/') || 
+                        const fileExtension = resource.file.split('.').pop().toLowerCase();
+                        
+                        // 检查文件扩展名
+                        if (['mp4', 'webm', 'ogg', 'mov', 'avi', 'wmv'].includes(fileExtension)) {
+                            resourceType = 'videos';
+                        } else if (['mp3', 'wav', 'ogg', 'flac', 'aac', 'wma'].includes(fileExtension)) {
+                            resourceType = 'audios';
+                        } else if (resource.file.startsWith('documents/') || 
                             resource.file.startsWith('code/') || 
                             resource.file.startsWith('books/') || 
                             resource.file.startsWith('notes/')) {
@@ -1141,6 +1158,17 @@
                 'png': '🖼️',
                 'gif': '🖼️',
                 'svg': '🖼️',
+                'mp4': '🎬',
+                'webm': '🎬',
+                'ogg': '🎬',
+                'mov': '🎬',
+                'avi': '🎬',
+                'wmv': '🎬',
+                'mp3': '🎵',
+                'wav': '🎵',
+                'flac': '🎵',
+                'aac': '🎵',
+                'wma': '🎵',
                 'md': '📄',
                 'txt': '📄',
                 'default': '📎'
@@ -1182,6 +1210,10 @@
                 previewPdfFile(resource.file);
             } else if (['txt', 'md', 'html', 'css', 'js', 'json'].includes(fileExtension)) {
                 previewTextFile(resource.file);
+            } else if (['mp4', 'webm', 'ogg', 'mov', 'avi', 'wmv'].includes(fileExtension)) {
+                previewVideoFile(resource.file);
+            } else if (['mp3', 'wav', 'ogg', 'flac', 'aac', 'wma'].includes(fileExtension)) {
+                previewAudioFile(resource.file);
             } else {
                 // 不支持的文件类型
                 document.getElementById('previewLoading').style.display = 'none';
@@ -1198,6 +1230,20 @@
             modal.style.display = 'none';
             pdfDoc = null;
             currentPage = 1;
+            
+            // 停止视频播放
+            const previewVideo = document.getElementById('previewVideo');
+            if (previewVideo) {
+                previewVideo.pause();
+                previewVideo.src = ''; // 清空视频源，确保停止加载
+            }
+            
+            // 停止音频播放
+            const previewAudio = document.getElementById('previewAudio');
+            if (previewAudio) {
+                previewAudio.pause();
+                previewAudio.src = ''; // 清空音频源，确保停止加载
+            }
         }
         
         // 预览图片文件
@@ -1320,6 +1366,77 @@
                     previewLoading.style.display = 'none';
                     document.getElementById('unsupportedPreview').style.display = 'block';
                 });
+        }
+        
+        // 预览视频文件
+        function previewVideoFile(fileUrl) {
+            const previewLoading = document.getElementById('previewLoading');
+            const videoPreview = document.getElementById('videoPreview');
+            const previewVideo = document.getElementById('previewVideo');
+            
+            // 重置视频状态
+            previewVideo.pause();
+            previewVideo.currentTime = 0;
+            
+            // 设置视频源并允许跨域
+            previewVideo.crossOrigin = 'anonymous';
+            previewVideo.src = fileUrl;
+            
+            // 视频元数据加载完成
+            previewVideo.onloadedmetadata = function() {
+                // 确保视频可以播放
+                if (previewVideo.readyState >= 3) {
+                    // HAVE_FUTURE_DATA 或 HAVE_ENOUGH_DATA
+                    previewLoading.style.display = 'none';
+                    videoPreview.style.display = 'block';
+                }
+            };
+            
+            // 视频可以播放时
+            previewVideo.oncanplay = function() {
+                previewLoading.style.display = 'none';
+                videoPreview.style.display = 'block';
+            };
+            
+            // 视频加载失败
+            previewVideo.onerror = function(e) {
+                console.error('视频加载错误:', e);
+                previewLoading.style.display = 'none';
+                document.getElementById('unsupportedPreview').style.display = 'block';
+            };
+            
+            // 视频缓冲更新
+            previewVideo.onprogress = function() {
+                // 确保视频缓冲正常
+                if (previewVideo.buffered.length > 0) {
+                    const bufferedEnd = previewVideo.buffered.end(previewVideo.buffered.length - 1);
+                    if (bufferedEnd > 0) {
+                        // 有内容缓冲，可以支持进度条拖动
+                    }
+                }
+            };
+        }
+        
+        // 预览音频文件
+        function previewAudioFile(fileUrl) {
+            const previewLoading = document.getElementById('previewLoading');
+            const audioPreview = document.getElementById('audioPreview');
+            const previewAudio = document.getElementById('previewAudio');
+            
+            // 设置音频源
+            previewAudio.src = fileUrl;
+            
+            // 音频加载完成后显示
+            previewAudio.onloadedmetadata = function() {
+                previewLoading.style.display = 'none';
+                audioPreview.style.display = 'block';
+            };
+            
+            // 音频加载失败
+            previewAudio.onerror = function() {
+                previewLoading.style.display = 'none';
+                document.getElementById('unsupportedPreview').style.display = 'block';
+            };
         }
         
         // 下载当前文件

@@ -31,6 +31,38 @@
       "categories": ["技术文档", "办公工具"],
       "thumbnail": null,
       "download_count": 0
+    },
+    {
+      "id": "2",
+      "name": "答案售后资料.rar",
+      "file": "storage/archives/答案售后资料.rar",
+      "type": "others",
+      "description": "同济大学机械考研答案售后资料。",
+      "date": "2026-01-15",
+      "size": "38.61MB",
+      "tags": ["文档"],
+      "section": "office",
+      "author": "GuoGuo",
+      "format": "RAR",
+      "categories": ["技术文档", "办公工具"],
+      "thumbnail": null,
+      "download_count": 0
+    },
+    {
+      "id": "3",
+      "name": "1.1Excel简介.mp4",
+      "file": "storage/media/1.1Excel简介.mp4",
+      "type": "videos",
+      "description": "excel简介。",
+      "date": "2026-01-15",
+      "size": "20.93MB",
+      "tags": ["视频"],
+      "section": "office",
+      "author": "GuoGuo",
+      "format": "MP4",
+      "categories": ["办公学习视频"],
+      "thumbnail": null,
+      "download_count": 0
     }
   ]
 }
