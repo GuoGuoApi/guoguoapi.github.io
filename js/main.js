@@ -350,7 +350,7 @@ function reinitSearch() {
  // 初始化联系方式功能
 function initContactInfo() {
     // 尝试从HTML中获取邮箱地址，如果没有则使用默认值
-    let emailAddress = 'guoguoapi@gmail.com';
+    let emailAddress = '****@gmail.com';
     let githubUrl = 'https://github.com/guoguoapi';
     
     // 从页脚的邮箱链接获取地址

@@ -414,6 +414,8 @@ const multiply = function(a, b) {
 
 网站底部联系方式通过模态框展示，提供了邮箱、GitHub 和微信三种联系方式。
 
+#### 1. 修改页脚中的邮箱链接
+
 打开 `index.html` 文件，找到页脚部分（footer）的联系方式代码并修改：
 
 ```html
@@ -421,24 +423,48 @@ const multiply = function(a, b) {
     <h3>联系方式</h3>
     <ul>
         <li><a href="mailto:your-email@example.com"><i class="fas fa-envelope"></i> 邮箱</a></li>
-        <li><a href="#"><i class="fab fa-github"></i> GitHub</a></li>
+        <li><a href="https://github.com/your-github-username" target="_blank"><i class="fab fa-github"></i> GitHub</a></li>
         <li><a href="#" onclick="showWechatQRCode()"><i class="fab fa-weixin"></i> 微信</a></li>
     </ul>
 </div>
 ```
 
+**注意：** 如果您希望隐藏完整邮箱地址，可以将 `mailto:` 后面的地址设置为部分隐藏的形式，例如 `mailto:****@gmail.com`
+
+#### 2. 修改模态框中显示的邮箱地址
+
+模态框中显示的邮箱地址是从 JavaScript 代码中获取的。打开 `js/main.js` 文件，找到 `initContactInfo` 函数并修改默认邮箱地址：
+
+```javascript
+function initContactInfo() {
+    // 尝试从HTML中获取邮箱地址，如果没有则使用默认值
+    let emailAddress = 'your-email@example.com'; // 修改为您的邮箱地址
+    let githubUrl = 'https://github.com/your-github-username'; // 修改为您的GitHub地址
+    // ...
+}
+```
+
+**注意：** 
+- 如果您在页脚中使用了部分隐藏的邮箱地址，建议在 JavaScript 中也使用相同的隐藏形式
+- 系统会优先从页脚的邮箱链接中获取地址，如果页脚中的邮箱链接格式正确（以 `mailto:` 开头），则会忽略 JavaScript 中的默认值
+
+#### 3. 保持所有页面的一致性
+
+网站的多个页面（首页、个人简历、学习记录、资料展示等）都包含页脚部分。为了保持一致性，建议：
+
+- 在 `index.html` 中修改页脚邮箱链接后，将相同的修改应用到其他所有 HTML 页面
+- 或者统一在 `js/main.js` 中设置默认邮箱地址，确保所有页面都使用相同的地址
+
 **重要说明：** 
 - 邮箱链接必须以 `mailto:` 开头，否则将无法正确打开邮件客户端
-- GitHub 链接设置为 `#` 以避免直接跳转，系统会通过模态框展示 GitHub 信息
+- GitHub 链接可以设置为实际的 GitHub 地址，也可以设置为 `#` 以通过模态框展示
 - 微信链接需要包含 `onclick="showWechatQRCode()"` 以显示二维码
 
-修改步骤：
-1. **邮箱**：将 `your-email@example.com` 替换为您的实际邮箱地址
-2. **GitHub**：在 JavaScript 代码中自动从页脚链接获取 GitHub 地址，或在 `js/main.js` 中的 `initContactInfo` 函数中直接设置
-3. **微信二维码设置**：
-   - 将您的微信二维码图片保存为 `wechat-qrcode.jpg`
-   - 上传图片到 `storage/images/` 文件夹
-   - 系统会自动在点击微信图标时显示二维码
+#### 4. 微信二维码设置
+
+- 将您的微信二维码图片保存为 `wechat-qrcode.jpg`
+- 上传图片到 `storage/images/` 文件夹
+- 系统会自动在点击微信图标时显示二维码
 
 ### 修改导航栏链接
 
